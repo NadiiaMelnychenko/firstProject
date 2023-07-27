@@ -4,7 +4,7 @@ services:
   
   api:
     build:
-      dockerfile: ./docker/api/Dockerfile.local
+      context: ./docker/api/
     container_name: ${PROJECT_NAME}-api
     volumes:
       - ./api:${API_DIRECTORY}
