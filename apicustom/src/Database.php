@@ -26,9 +26,15 @@ class Database
     public function execute(QueryBuilder $builder){
         $sth = $this->pdo->prepare($builder->getSql());
         $params = $builder->getParams();
+        echo("\n----params-----------\n");
+        var_dump($params);
+        echo("\n---------------\n");
         foreach ($params as $key => $value){
             $sth->bindValue($key, $value);
         }
+        echo("\n---------------\n");
+        var_dump($sth);
+        echo("\n---------------\n");
         $sth->execute();
         return $sth->fetchAll();
     }
