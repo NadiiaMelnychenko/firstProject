@@ -1,6 +1,7 @@
 <?php
+global $CoreParams;
 # Підключення файлів
-#require_once ('../src/FrontController.php');
+require_once ('../config/config.php');
 #include () - якщо файлу не існує просто не підключить
 #require - якщо файлу не існує - помилка
 #include_once() - одноразове підключення з once
@@ -14,9 +15,25 @@ spl_autoload_register(function ($className){
     }
 
 });
+$database = new Database(
+    $CoreParams ['Database']['Host'],
+    $CoreParams ['Database']['Username'],
+    $CoreParams ['Database']['Password'],
+    $CoreParams ['Database']['Database']
+);
+$database->connect();
 
-$front_controller = new FrontController();
-$front_controller->run();
+
+$query = new QueryBuilder();
+$query->select(["title, text"])
+    ->from("news")
+    ->where(['id'=>5]);
+#$query->AndWhere
+$rows = $database->execute($query);
+var_dump($rows);
+
+//$front_controller = new FrontController();
+//$front_controller->run();
 
 
 
