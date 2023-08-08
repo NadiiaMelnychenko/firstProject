@@ -23,13 +23,13 @@ $database = new Database(
 );
 $database->connect();
 
-#select
+/*#select
 $query = new QueryBuilder();
 $query->select(["title, text"])
     ->fromToTable("news")
     ->where(['id'=>10]);
 $rows = $database->execute($query);
-var_dump($rows);
+var_dump($rows);*/
 
 
 /*  #insert
@@ -40,15 +40,16 @@ $query->insert(['title','text','date'],['newTitle22', 'newText22',$date])
     ->fromToTable('news');
 var_dump($query);
 $rows = $database->execute($query);
+*/
 
-  #update
+/*  #update
 $query = new QueryBuilder();
-$query->update(['title','text'],['mainTitle!','mainText&'])
+$query->update(['title','text'],['mainTi','mainText&'])
     ->fromToTable('news')
-    ->where(['id'=>5]);
+    ->where(['title'=>'mainTitle!']);
 var_dump($query);
-$rows = $database->execute($query);
-
+$rows = $database->execute($query);*/
+/*
   #delete
 $query = new QueryBuilder();
 $query->delete()
@@ -57,17 +58,17 @@ $query->delete()
 $rows = $database->execute($query);
 var_dump($rows);*/
 
-#select join
+/*#select join
 $query = new QueryBuilder();
 $query->select(["news.title, news.text, comments.text"])
     ->fromToTable("news")
     ->join('left','comments','news.id=comments.news_id')
     ->where(['news.id'=>9]);
 $rows = $database->execute($query);
-var_dump($rows);
+var_dump($rows);*/
 
-//$front_controller = new FrontController();
-//$front_controller->run();
+$front_controller = new FrontController();
+$front_controller->run();
 
 
 

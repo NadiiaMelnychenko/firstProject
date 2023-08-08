@@ -11,6 +11,7 @@ class NewsController{
     /**
      * @return Response
      */
+    #[Route("addition")]
     public function add() : Response
     {
         return new Response('Add', "Add!!!");
@@ -19,6 +20,7 @@ class NewsController{
     /**
      * @return Response
      */
+    #[Route("home")]
     public function index() : Response
     {
         return new Response('Index', "Index!!!");
