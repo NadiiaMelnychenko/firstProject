@@ -1,9 +1,16 @@
 <?php
-class NewsController{
+
+namespace App\Controllers;
+
+use App\Core\Response;
+use App\Core\Attributes\Route;
+
+class NewsController
+{
     /**
      * @return Response
      */
-    public function list() : Response
+    public function list(): Response
     {
         return new Response('List', "List!!!");
     }
@@ -12,7 +19,7 @@ class NewsController{
      * @return Response
      */
     #[Route("addition")]
-    public function add() : Response
+    public function add(): Response
     {
         return new Response('Add', "Add!!!");
     }
@@ -21,7 +28,7 @@ class NewsController{
      * @return Response
      */
     #[Route("home")]
-    public function index() : Response
+    public function index(): Response
     {
         return new Response('Index', "Index!!!");
     }

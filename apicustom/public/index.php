@@ -1,5 +1,9 @@
 <?php
 global $CoreParams;
+
+use App\Controllers\FrontController;
+
+//use Core\Database\Database;
 # Підключення файлів
 require_once ('../config/config.php');
 #include () - якщо файлу не існує просто не підключить
@@ -9,19 +13,22 @@ require_once ('../config/config.php');
 # spl_autoload - примусово запускає підключення певного класу
 # якщо клас ще не оголошено, запускається spl_autoload_register
 spl_autoload_register(function ($className){
-    $path = "../src/{$className}.php";
+    $newClassName = str_replace('\\','/',$className);
+    if(stripos($newClassName,'App/') === 0)
+        $newClassName = substr($newClassName, 4);
+    $path = "../src/{$newClassName}.php";
     if(file_exists($path)){
         require_once ($path);
     }
 
 });
-$database = new Database(
+/*$database = new Database(
     $CoreParams ['Database']['Host'],
     $CoreParams ['Database']['Username'],
     $CoreParams ['Database']['Password'],
     $CoreParams ['Database']['Database']
 );
-$database->connect();
+$database->connect();*/
 
 /*#select
 $query = new QueryBuilder();

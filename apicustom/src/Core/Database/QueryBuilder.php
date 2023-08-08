@@ -1,5 +1,6 @@
 <?php
 
+namespace App\Core\Database;
 class QueryBuilder
 {
     protected $params;
@@ -26,6 +27,7 @@ class QueryBuilder
         $this->fields = $fields_string;
         return $this;
     }
+
     public function insert($tableCol, $fields)
     {
         $this->type = "insert";
@@ -35,15 +37,16 @@ class QueryBuilder
             $fields_string = implode("', '", $fields);
         if (is_array($tableCol))
             $tableCol_string = implode(", ", $tableCol);
-        $this->fields = "('".$fields_string."')";
-        $this->tableCol = "(".$tableCol_string.")";
+        $this->fields = "('" . $fields_string . "')";
+        $this->tableCol = "(" . $tableCol_string . ")";
         return $this;
     }
+
     public function update($tableCol, $fields)
     {
         $this->type = "update";
-        if (is_array($tableCol)){
-            foreach ($tableCol as $k => $v){
+        if (is_array($tableCol)) {
+            foreach ($tableCol as $k => $v) {
                 $res[] = "$v='$fields[$k]'";
             }
         } else
@@ -54,11 +57,13 @@ class QueryBuilder
         $this->fields = $res_string;
         return $this;
     }
+
     public function delete()
     {
         $this->type = "delete";
         return $this;
     }
+
     public function join($how, $table, $on)
     {
         $this->joinType = strtoupper($how);
@@ -69,6 +74,7 @@ class QueryBuilder
         $this->on = $on_string;
         return $this;
     }
+
     public function fromToTable($table)
     {
         $this->table = $table;
@@ -86,7 +92,7 @@ class QueryBuilder
                     $sql .= " WHERE {$this->where}";
                 return $sql;
                 break;
-                //SELECT news.title, news.text, comments.text FROM `news` INNER JOIN comments ON news.id=comments.news_id WHERE news.id=9
+            //SELECT news.title, news.text, comments.text FROM `news` INNER JOIN comments ON news.id=comments.news_id WHERE news.id=9
             case 'insert':
                 return "INSERT INTO {$this->table} {$this->tableCol} VALUES {$this->fields}";
                 break;
@@ -110,12 +116,11 @@ class QueryBuilder
         $where_parts = [];
         foreach ($where as $key => $value) {
             //array_push($where_parts);
-            if (strpos($key, '.')){
+            if (strpos($key, '.')) {
                 $dkey = str_replace(".", "", $key);
                 $this->params[$dkey] = $value;
                 $where_parts [] = "{$key} = :{$dkey}";
-            }
-            else{
+            } else {
                 $this->params[$key] = $value;
                 $where_parts [] = "{$key} = :{$key}";
             }
@@ -124,6 +129,7 @@ class QueryBuilder
         $this->where = implode(' AND ', $where_parts);
         return $this;
     }
+
     public function getParams(): array
     {
         return $this->params;

@@ -1,5 +1,8 @@
 <?php
 
+namespace App\Core\Attributes;
+use Attribute;
+
 #[Attribute]
 class Route
 {
