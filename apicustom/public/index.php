@@ -1,24 +1,24 @@
 <?php
 global $CoreParams;
 
-use App\Controllers\FrontController;
+use App\Core\FrontController;
 
 //use Core\Database\Database;
 # Підключення файлів
-require_once ('../config/config.php');
+require_once('../config/config.php');
 #include () - якщо файлу не існує просто не підключить
 #require - якщо файлу не існує - помилка
 #include_once() - одноразове підключення з once
 
 # spl_autoload - примусово запускає підключення певного класу
 # якщо клас ще не оголошено, запускається spl_autoload_register
-spl_autoload_register(function ($className){
-    $newClassName = str_replace('\\','/',$className);
-    if(stripos($newClassName,'App/') === 0)
+spl_autoload_register(function ($className) {
+    $newClassName = str_replace('\\', '/', $className);
+    if (stripos($newClassName, 'App/') === 0)
         $newClassName = substr($newClassName, 4);
     $path = "../src/{$newClassName}.php";
-    if(file_exists($path)){
-        require_once ($path);
+    if (file_exists($path)) {
+        require_once($path);
     }
 
 });
@@ -74,10 +74,28 @@ $query->select(["news.title, news.text, comments.text"])
 $rows = $database->execute($query);
 var_dump($rows);*/
 
-$front_controller = new FrontController();
-$front_controller->run();
+/*$front_controller = new FrontController();
+$front_controller->run();*/
+
+/*function getObject(): ?\App\Core\Response
+{
+    return null;
+    //return new App\Core\Response("title","text");
+}
+
+$obj = getObject();
+# Перевірити чи null, якщо так то не викидати fatal error - поставити ?-> (null safe operator)
+# При цьому в методі потрібно повертати із ?
+echo $obj?->getText();*/
+
+/*function getObject(string $name, string $text="", string $mode=""): void{
+}
+# Іменовані аргументи/параметри
+getObject(mode: "active", name:"title");*/
 
 
-
-
-
+/*$record = new App\Core\Database\ActiveRecord($database);
+$record->title = "title";
+$record->text = "text";
+$record->data = "2023-08-11 19:39:00";
+$record->save();*/

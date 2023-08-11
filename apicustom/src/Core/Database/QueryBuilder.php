@@ -18,7 +18,7 @@ class QueryBuilder
         $this->params = [];
     }
 
-    public function select($fields = "*")
+    public function select(mixed $fields = "*") :self
     {
         $this->type = "select";
         $fields_string = $fields;
@@ -28,9 +28,10 @@ class QueryBuilder
         return $this;
     }
 
-    public function insert($tableCol, $fields)
+    public function insert($tableCol, $fields) :self
     {
         $this->type = "insert";
+        // Асоціативний масив array_values/keys
         $fields_string = $fields;
         $tableCol_string = $tableCol;
         if (is_array($fields))
@@ -42,7 +43,7 @@ class QueryBuilder
         return $this;
     }
 
-    public function update($tableCol, $fields)
+    public function update($tableCol, $fields) :self
     {
         $this->type = "update";
         if (is_array($tableCol)) {
@@ -58,13 +59,13 @@ class QueryBuilder
         return $this;
     }
 
-    public function delete()
+    public function delete() :self
     {
         $this->type = "delete";
         return $this;
     }
 
-    public function join($how, $table, $on)
+    public function join($how, $table, $on) :self
     {
         $this->joinType = strtoupper($how);
         $this->joinTable = $table;
@@ -75,7 +76,7 @@ class QueryBuilder
         return $this;
     }
 
-    public function fromToTable($table)
+    public function fromToTable($table) : self
     {
         $this->table = $table;
         return $this;
@@ -95,6 +96,7 @@ class QueryBuilder
             //SELECT news.title, news.text, comments.text FROM `news` INNER JOIN comments ON news.id=comments.news_id WHERE news.id=9
             case 'insert':
                 return "INSERT INTO {$this->table} {$this->tableCol} VALUES {$this->fields}";
+                $this->params = '';
                 break;
             case 'update':
                 $sql = "UPDATE {$this->table} SET {$this->fields}";
@@ -111,7 +113,7 @@ class QueryBuilder
         }
     }
 
-    public function where($where): QueryBuilder
+    public function where($where): self
     {
         $where_parts = [];
         foreach ($where as $key => $value) {

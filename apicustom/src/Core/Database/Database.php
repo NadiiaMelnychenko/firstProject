@@ -10,7 +10,7 @@ class Database
     protected $username;
     protected $password;
     protected $dbname;
-    protected PDO $pdo;
+    protected \PDO $pdo;
 
     public function __construct($host, $username, $password, $dbname)
     {
@@ -18,6 +18,11 @@ class Database
         $this->username = $username;
         $this->password = $password;
         $this->dbname = $dbname;
+    }
+
+    public function __dectruct(){
+        # Видалити об'єкт
+        unset($this->pdo);
     }
 
     public function getConnectionString()

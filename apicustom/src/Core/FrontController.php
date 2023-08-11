@@ -1,9 +1,9 @@
 <?php
-namespace App\Controllers;
+
+namespace App\Core;
 
 use App\Core\Attributes\Route;
-use App\Core\Response;
-use ReflectionClass;
+
 # Обробляє url
 class FrontController
 {
@@ -18,7 +18,7 @@ class FrontController
         if (!empty($url_elements) && !empty($url_elements[0])) {
             # Формуємо назви
             # ucfirst() - перша літера велика
-            $controller = 'App\Controllers\\'. ucfirst($url_elements[0]) . 'Controller';
+            $controller = 'App\Controllers\\' . ucfirst($url_elements[0]) . 'Controller';
             # Чи існує елемент
 //            if (isset($url_elements[1])){
 //                $method = $url_elements[1];
@@ -34,7 +34,7 @@ class FrontController
             $controller_object = new $controller();
             $routes = [];
             # Для Reflection API
-            $reflectionClass = new ReflectionClass($controller_object);
+            $reflectionClass = new \ReflectionClass($controller_object);
             $methods_list = $reflectionClass->getMethods();
             foreach ($methods_list as $reflectionMethod) {
                 $attributes = $reflectionMethod->getAttributes(Route::class);
@@ -57,6 +57,10 @@ class FrontController
                 # instanceof - перевірка не просто чи порожнє, а саме має об'єкт Response, включачи наслідування (всі похідні класи)
                 if ($response instanceof Response) {
                     echo $response->getText();
+                }
+                /** @var $response string */
+                if (gettype($response) === 'string') {
+                    echo $response;
                 }
             } else
                 echo("Error 404!");
