@@ -28,7 +28,7 @@ class QueryBuilder
         return $this;
     }
 
-    public function insert($tableCol, $fields) :self
+    /*public function insert($tableCol, $fields) :self
     {
         $this->type = "insert";
         // Асоціативний масив array_values/keys
@@ -40,6 +40,16 @@ class QueryBuilder
             $tableCol_string = implode(", ", $tableCol);
         $this->fields = "('" . $fields_string . "')";
         $this->tableCol = "(" . $tableCol_string . ")";
+        return $this;
+    }*/
+    public function insert($row, $table) :self
+    {
+        $this->type = "insert";
+        $fields_string = implode("', '", array_values($row));
+        $tableCol_string = implode(", ", array_keys($row));
+        $this->fields = "'" . $fields_string . "'";
+        $this->tableCol = $tableCol_string;
+        $this->table = $table;
         return $this;
     }
 
@@ -76,7 +86,7 @@ class QueryBuilder
         return $this;
     }
 
-    public function fromToTable($table) : self
+    public function from($table) : self
     {
         $this->table = $table;
         return $this;
@@ -95,7 +105,7 @@ class QueryBuilder
                 break;
             //SELECT news.title, news.text, comments.text FROM `news` INNER JOIN comments ON news.id=comments.news_id WHERE news.id=9
             case 'insert':
-                return "INSERT INTO {$this->table} {$this->tableCol} VALUES {$this->fields}";
+                return "INSERT INTO {$this->table} ({$this->tableCol}) VALUES ({$this->fields})";
                 $this->params = '';
                 break;
             case 'update':

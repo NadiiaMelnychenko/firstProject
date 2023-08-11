@@ -2,7 +2,7 @@
 
 namespace App\Core\Database;
 
-//use Database\PDO;
+use PDO;
 
 class Database
 {
@@ -10,7 +10,7 @@ class Database
     protected $username;
     protected $password;
     protected $dbname;
-    protected \PDO $pdo;
+    protected PDO $pdo;
 
     public function __construct($host, $username, $password, $dbname)
     {

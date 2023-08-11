@@ -23,7 +23,7 @@ class ActiveRecord
 
     function __get(string $name)
     {
-        return $this->fields[$anme];
+        return $this->fields[$name];
     }
 
     # Для виклику неіснуючих методів
@@ -31,8 +31,8 @@ class ActiveRecord
         switch ($name){
             case 'save':
                 $builder = new QueryBuilder();
-                $builder->insert($this->fields),
-                    ->fromToTable($arguments[0]);
+                $builder->insert($this->fields, $arguments[1]);
+                    //->from($arguments[0]);
         }
     }
 }
