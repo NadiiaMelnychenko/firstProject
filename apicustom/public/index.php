@@ -1,9 +1,12 @@
 <?php
 global $CoreParams;
 
+use App\Core\Core;
 use App\Core\Database\Database;
 use App\Core\Database\QueryBuilder;
 use App\Core\FrontController;
+use App\Core\StaticCore;
+use App\Models\News;
 
 //use Core\Database\Database;
 # Підключення файлів
@@ -24,6 +27,11 @@ spl_autoload_register(function ($className) {
     }
 
 });
+
+$core = Core::GetInstance();
+$core->init();
+$core->run();
+$core->done();
 /*$database = new Database(
     $CoreParams ['Database']['Host'],
     $CoreParams ['Database']['Username'],
@@ -41,7 +49,7 @@ $rows = $database->execute($query);
 var_dump($rows);*/
 
 
-  #insert
+#insert
 /*$query = new QueryBuilder();
 date_default_timezone_set('Europe/Kiev');
 $date = date("Y-m-d H:i:s");
@@ -102,8 +110,9 @@ echo $obj?->getText();*/
 getObject(mode: "active", name:"title");*/
 
 
-/*$record = new App\Core\Database\ActiveRecord($database);
+$record = new News();
 $record->title = "title";
 $record->text = "text";
-$record->data = "2023-08-11 19:39:00";
-$record->save();*/
+date_default_timezone_set('Europe/Kiev');
+$record->date = date("Y-m-d H:i:s");
+$record->save();

@@ -2,17 +2,17 @@
 
 namespace App\Core\Database;
 
-use Cassandra\Date;
-use Symfony\Component\VarDumper\Cloner\Data;
+use App\Core\Core;
+use App\Core\StaticCore;
 
 class ActiveRecord
 {
-    protected $fields = [];
+    protected array $fields = [];
+    protected string $table;
     protected Database $database;
 
-    function __construct(Database $database)
+    function __construct()
     {
-        $this->database = $database;
     }
 
     # Магічні методи для приписування неіснуючих полів
@@ -27,12 +27,20 @@ class ActiveRecord
     }
 
     # Для виклику неіснуючих методів
-    function __call(string $name, array $arguments){
-        switch ($name){
+    function __call(string $name, array $arguments)
+    {
+        switch ($name) {
             case 'save':
                 $builder = new QueryBuilder();
-                $builder->insert($this->fields, $arguments[1]);
-                    //->from($arguments[0]);
+                if (!empty($arguments[0]))
+                    $this->table = $arguments[0];
+                if (!empty($this->table)) {
+                    $builder->insert($this->fields, $this->table);
+                    Core::GetInstance()->GetDatabase()->execute($builder);
+                } else
+                    //ERROR
+
+                    break;
         }
     }
 }

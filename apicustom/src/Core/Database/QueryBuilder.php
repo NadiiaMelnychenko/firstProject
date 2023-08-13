@@ -18,7 +18,7 @@ class QueryBuilder
         $this->params = [];
     }
 
-    public function select(mixed $fields = "*") :self
+    public function select(mixed $fields = "*"): self
     {
         $this->type = "select";
         $fields_string = $fields;
@@ -42,18 +42,19 @@ class QueryBuilder
         $this->tableCol = "(" . $tableCol_string . ")";
         return $this;
     }*/
-    public function insert($row, $table) :self
+    public function insert($row, $table): self
     {
         $this->type = "insert";
-        $fields_string = implode("', '", array_values($row));
-        $tableCol_string = implode(", ", array_keys($row));
-        $this->fields = "'" . $fields_string . "'";
-        $this->tableCol = $tableCol_string;
+        $this->params = $row;
+//        $fields_string = implode("', '", array_values($row));
+//        $tableCol_string = implode(", ", array_keys($row));
+//        $this->fields = "'" . $fields_string . "'";
+//        $this->tableCol = $tableCol_string;
         $this->table = $table;
         return $this;
     }
 
-    public function update($tableCol, $fields) :self
+    public function update($tableCol, $fields): self
     {
         $this->type = "update";
         if (is_array($tableCol)) {
@@ -69,13 +70,13 @@ class QueryBuilder
         return $this;
     }
 
-    public function delete() :self
+    public function delete(): self
     {
         $this->type = "delete";
         return $this;
     }
 
-    public function join($how, $table, $on) :self
+    public function join($how, $table, $on): self
     {
         $this->joinType = strtoupper($how);
         $this->joinTable = $table;
@@ -86,7 +87,7 @@ class QueryBuilder
         return $this;
     }
 
-    public function from($table) : self
+    public function from($table): self
     {
         $this->table = $table;
         return $this;
@@ -103,10 +104,11 @@ class QueryBuilder
                     $sql .= " WHERE {$this->where}";
                 return $sql;
                 break;
-            //SELECT news.title, news.text, comments.text FROM `news` INNER JOIN comments ON news.id=comments.news_id WHERE news.id=9
             case 'insert':
-                return "INSERT INTO {$this->table} ({$this->tableCol}) VALUES ({$this->fields})";
-                $this->params = '';
+                $fields_string = implode("', '", array_values($this->params));
+                $tableCol_string = implode(", ", array_keys($this->params));
+                $this->params = [];
+                return "INSERT INTO {$this->table} ({$tableCol_string}) VALUES ('{$fields_string}')";
                 break;
             case 'update':
                 $sql = "UPDATE {$this->table} SET {$this->fields}";

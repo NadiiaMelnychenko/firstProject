@@ -20,7 +20,8 @@ class Database
         $this->dbname = $dbname;
     }
 
-    public function __dectruct(){
+    public function __dectruct()
+    {
         # Видалити об'єкт
         unset($this->pdo);
     }
@@ -45,15 +46,15 @@ class Database
     {
         $sth = $this->pdo->prepare($builder->getSql());
         $params = $builder->getParams();
-        echo("\n----params-----------\n");
+        /*echo("\n----params-----------\n");
         var_dump($params);
-        echo("\n---------------\n");
+        echo("\n---------------\n");*/
         foreach ($params as $key => $value) {
             $sth->bindValue($key, $value);
         }
-        echo("\n---------------\n");
+        /*echo("\n---------------\n");
         var_dump($sth);
-        echo("\n---------------\n");
+        echo("\n---------------\n");*/
         $sth->execute();
         return $sth->fetchAll();
     }
