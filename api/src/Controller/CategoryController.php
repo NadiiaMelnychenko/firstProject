@@ -12,7 +12,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-class ProductController extends AbstractController
+class CategoryController extends AbstractController
 {
     /**
      * @var EntityManagerInterface
@@ -32,50 +32,35 @@ class ProductController extends AbstractController
      * @return JsonResponse
      * @throws Exception
      */
-    #[Route('product-create', name: 'product_create')]
+    #[Route('category-create', name: 'category_create')]
     public function create(Request $request): JsonResponse
     {
         $requestData = json_decode($request->getContent(), true);
 
-        if (!isset(
-            $requestData['name'],
-            $requestData['price'],
-            $requestData['description'],
-            $requestData['category']
-        )) {
+        if (!isset($requestData['name'], $requestData['type'])) {
             throw new Exception("Invalid request data");
         }
 
-        $category = $this->entityManager->getRepository(Category::class)->find($requestData['category']);
+        $category = new Category();
 
-        if (!$category) {
-            throw new Exception("Category with id " . $requestData['category'] . " not found");
-        }
+        $category->setName($requestData['name']);
+        $category->setType($requestData['type']);
 
-        $product = new Product();
-
-        $product
-            ->setName($requestData['name'])
-            ->setPrice($requestData['price'])
-            ->setDescription($requestData['description'])
-            ->setCategory($category);
-
-        $this->entityManager->persist($product);
+        $this->entityManager->persist($category);
         $this->entityManager->flush();
 
-
-        return new JsonResponse($product, Response::HTTP_CREATED);
+        return new JsonResponse($category, Response::HTTP_CREATED);
     }
 
     /**
      * @return JsonResponse
      */
-    #[Route('product-all', name: 'product_all')]
+    #[Route('category-all', name: 'category_all')]
     public function read(): JsonResponse
     {
-        $products = $this->entityManager->getRepository(Product::class)->findAll();
+        $category = $this->entityManager->getRepository(Product::class)->findAll();
 
-        return new JsonResponse($products);
+        return new JsonResponse($category);
     }
 
     /**
@@ -83,16 +68,16 @@ class ProductController extends AbstractController
      * @return JsonResponse
      * @throws Exception
      */
-    #[Route('product/{id}', name: 'product_get_item')]
+    #[Route('category/{id}', name: 'category_get_item')]
     public function getItem(string $id): JsonResponse
     {
-        $product = $this->entityManager->getRepository(Product::class)->find($id);
+        $category = $this->entityManager->getRepository(Category::class)->find($id);
 
-        if (!$product) {
-            throw new Exception("Product with id " . $id . " not found");
+        if (!$category) {
+            throw new Exception("Category with id " . $id . " not found");
         }
 
-        return new JsonResponse($product);
+        return new JsonResponse($category);
     }
 
     /**
@@ -100,7 +85,7 @@ class ProductController extends AbstractController
      * @return JsonResponse
      * @throws Exception
      */
-    #[Route('product-update/{id}', name: 'product_update_item')]
+    #[Route('category-update/{id}', name: 'category_update_item')]
     public function updateProduct(string $id): JsonResponse
     {
         /** @var Product $product */

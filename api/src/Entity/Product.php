@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\ProductRepository;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use JsonSerializable;
@@ -24,6 +25,67 @@ class Product implements JsonSerializable
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $description = null;
 
+    #[ORM\ManyToOne(targetEntity: Category::class, inversedBy: "products")]
+    private ?Category $category = null;
+
+    #[ORM\OneToOne(targetEntity: ProductInfo::class)]
+    private ?ProductInfo $productInfo = null;
+
+    #[ORM\ManyToMany(targetEntity: Test::class)]
+    private Collection $test;
+
+    /**
+     * @return Collection
+     */
+    public function getTest(): Collection
+    {
+        return $this->test;
+    }
+
+    /**
+     * @param Collection $test
+     * @return void
+     */
+    public function setTest(Collection $test): void
+    {
+        $this->test = $test;
+    }
+
+    /**
+     * @return Category|null
+     */
+    public function getCategory(): ?Category
+    {
+        return $this->category;
+    }
+
+    /**
+     * @param Category|null $category
+     * @return void
+     */
+    public function setCategory(?Category $category): void
+    {
+        $this->category = $category;
+    }
+
+    /**
+     * @return ProductInfo|null
+     */
+    public function getProductInfo(): ?ProductInfo
+    {
+        return $this->productInfo;
+    }
+
+    /**
+     * @param ProductInfo|null $productInfo
+     * @return void
+     */
+    public function setProductInfo(?ProductInfo $productInfo): void
+    {
+        $this->productInfo = $productInfo;
+    }
+
+
     /**
      * @return int|null
      */
@@ -44,7 +106,7 @@ class Product implements JsonSerializable
      * @param string $name
      * @return $this
      */
-    public function setName(string $name): static
+    public function setName(string $name): self
     {
         $this->name = $name;
 
@@ -63,7 +125,7 @@ class Product implements JsonSerializable
      * @param string $price
      * @return $this
      */
-    public function setPrice(string $price): static
+    public function setPrice(string $price): self
     {
         $this->price = $price;
 
@@ -82,7 +144,7 @@ class Product implements JsonSerializable
      * @param string|null $description
      * @return $this
      */
-    public function setDescription(?string $description): static
+    public function setDescription(?string $description): self
     {
         $this->description = $description;
 
@@ -95,9 +157,11 @@ class Product implements JsonSerializable
     public function jsonSerialize(): array
     {
         return [
+            "id" => $this->getId(),
             "name" => $this->getName(),
             "price" => $this->getPrice(),
-            "description" => $this->getDescription()
+            "description" => $this->getDescription(),
+            "category" => $this->getCategory()
         ];
     }
 }
