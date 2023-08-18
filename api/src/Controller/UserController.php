@@ -34,6 +34,7 @@ class UserController extends AbstractController
     public function index(): JsonResponse
     {
         $users = $this->entityManager->getRepository(User::class)->findAll();
+
         return new JsonResponse($users);
     }
 
@@ -46,8 +47,10 @@ class UserController extends AbstractController
     public function read(string $id): JsonResponse
     {
         $user = $this->entityManager->getRepository(User::class)->find($id);
-        if (!$user)
+
+        if (!$user) {
             throw new Exception("There is no user with id " . $id);
+        }
 
         return new JsonResponse($user);
     }
@@ -67,13 +70,15 @@ class UserController extends AbstractController
             $requestData['login'],
             $requestData['password'],
             $requestData['role']
-        ))
+        )) {
             throw new Exception("Put values");
+        }
 
         $role = $this->entityManager->getRepository(Role::class)->find($requestData['role']);
 
-        if (!$role)
+        if (!$role) {
             throw new Exception("There is no role with id " . $requestData['role']);
+        }
 
         $user = new User();
         $user
@@ -99,8 +104,9 @@ class UserController extends AbstractController
     {
         $user = $this->entityManager->getRepository(User::class)->find($id);
 
-        if (!$user)
+        if (!$user) {
             throw new Exception("There is no user with id " . $id);
+        }
 
         $user->setName("Anton");
         $this->entityManager->flush();
@@ -117,10 +123,14 @@ class UserController extends AbstractController
     public function delete(string $id): JsonResponse
     {
         $user = $this->entityManager->getRepository(User::class)->find($id);
-        if (!$user)
+
+        if (!$user) {
             throw new Exception("There is no user with id " . $id);
+        }
+
         $this->entityManager->remove($user);
         $this->entityManager->flush();
-        return new JsonResponse($this->entityManager->getRepository(User::class)->findAll());
+
+        return new JsonResponse();
     }
 }

@@ -24,29 +24,4 @@ class LikeRepository extends ServiceEntityRepository
         parent::__construct($registry, Like::class);
     }
 
-    /**
-     * @param $value
-     * @return float|int|mixed|string
-     */
-    public function findAllByUserId($value): mixed
-    {
-        return $this->createQueryBuilder('l')
-            ->andWhere('l.user_id = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getResult();
-    }
-
-    /**
-     * @param $value
-     * @return float|int|mixed|string
-     */
-    public function findAllByBookId($value): mixed
-    {
-        return $this->createQueryBuilder('l')
-            ->andWhere('l.book_id = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getResult();
-    }
 }

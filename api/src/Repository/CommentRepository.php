@@ -24,17 +24,6 @@ class CommentRepository extends ServiceEntityRepository
         parent::__construct($registry, Comment::class);
     }
 
-    /**
-     * @param string $book_id
-     * @return float|int|mixed|string
-     */
-    public function getCommentsByBookId(string $book_id): mixed
-    {
-        return $this->createQueryBuilder("comment")
-            ->where("comment.book_id = :book_id")
-            ->setParameter("book_id", "%".$book_id."%")
-            ->getQuery()
-            ->getResult();
-    }
+
 
 }

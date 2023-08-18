@@ -33,6 +33,7 @@ class GenreController extends AbstractController
     public function index(): JsonResponse
     {
         $genres = $this->entityManager->getRepository(Genre::class)->findAll();
+
         return new JsonResponse($genres);
     }
 
@@ -45,8 +46,10 @@ class GenreController extends AbstractController
     public function read(string $id): JsonResponse
     {
         $genre = $this->entityManager->getRepository(Genre::class)->find($id);
-        if (!$genre)
+
+        if (!$genre) {
             throw new Exception("There is no genre with id " . $id);
+        }
 
         return new JsonResponse($genre);
     }
@@ -61,8 +64,9 @@ class GenreController extends AbstractController
     {
         $requestData = json_decode($request->getContent(), true);
 
-        if (!isset($requestData['type']))
+        if (!isset($requestData['type'])) {
             throw new Exception("Put type");
+        }
 
         $genre = new Genre();
         $genre->setType($requestData['type']);
@@ -83,8 +87,9 @@ class GenreController extends AbstractController
     {
         $genre = $this->entityManager->getRepository(Genre::class)->find($id);
 
-        if (!$genre)
+        if (!$genre) {
             throw new Exception("There is no genre with id " . $id);
+        }
 
         $genre->setType("fiction");
         $this->entityManager->flush();
@@ -101,10 +106,14 @@ class GenreController extends AbstractController
     public function delete(string $id): JsonResponse
     {
         $genre = $this->entityManager->getRepository(Genre::class)->find($id);
-        if (!$genre)
+
+        if (!$genre) {
             throw new Exception("There is no genre with id " . $id);
+        }
+
         $this->entityManager->remove($genre);
         $this->entityManager->flush();
-        return new JsonResponse($this->entityManager->getRepository(Genre::class)->findAll());
+
+        return new JsonResponse();
     }
 }

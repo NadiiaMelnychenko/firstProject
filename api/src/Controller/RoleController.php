@@ -33,6 +33,7 @@ class RoleController extends AbstractController
     public function index(): JsonResponse
     {
         $roles = $this->entityManager->getRepository(Role::class)->findAll();
+
         return new JsonResponse($roles);
     }
 
@@ -45,8 +46,10 @@ class RoleController extends AbstractController
     public function read(string $id): JsonResponse
     {
         $role = $this->entityManager->getRepository(Role::class)->find($id);
-        if (!$role)
+
+        if (!$role) {
             throw new Exception("There is no role with id " . $id);
+        }
 
         return new JsonResponse($role);
     }
@@ -61,8 +64,9 @@ class RoleController extends AbstractController
     {
         $requestData = json_decode($request->getContent(), true);
 
-        if (!isset($requestData['role']))
+        if (!isset($requestData['role'])) {
             throw new Exception("Put role name");
+        }
 
         $role = new Role();
         $role->setRole($requestData['role']);
@@ -83,8 +87,9 @@ class RoleController extends AbstractController
     {
         $role = $this->entityManager->getRepository(Role::class)->find($id);
 
-        if (!$role)
+        if (!$role) {
             throw new Exception("There is no role with id " . $id);
+        }
 
         $role->setRole("admin2");
         $this->entityManager->flush();
@@ -101,10 +106,14 @@ class RoleController extends AbstractController
     public function delete(string $id): JsonResponse
     {
         $role = $this->entityManager->getRepository(Role::class)->find($id);
-        if (!$role)
+
+        if (!$role) {
             throw new Exception("There is no role with id " . $id);
+        }
+
         $this->entityManager->remove($role);
         $this->entityManager->flush();
-        return new JsonResponse($this->entityManager->getRepository(Role::class)->findAll());
+
+        return new JsonResponse();
     }
 }

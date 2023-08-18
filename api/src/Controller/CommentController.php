@@ -36,6 +36,7 @@ class CommentController extends AbstractController
     public function index(): JsonResponse
     {
         $comments = $this->entityManager->getRepository(Comment::class)->findAll();
+
         return new JsonResponse($comments);
     }
 
@@ -48,8 +49,10 @@ class CommentController extends AbstractController
     public function read(string $id): JsonResponse
     {
         $comment = $this->entityManager->getRepository(Comment::class)->find($id);
-        if (!$comment)
+
+        if (!$comment) {
             throw new Exception("There is no comment with id " . $id);
+        }
 
         return new JsonResponse($comment);
     }
@@ -63,9 +66,13 @@ class CommentController extends AbstractController
     public function readBookComments(string $id): JsonResponse
     {
         $book = $this->entityManager->getRepository(Book::class)->find($id);
-        if (!$book)
+
+        if (!$book) {
             throw new Exception("There is no book with id " . $id);
-        $comment = $this->entityManager->getRepository(Comment::class)->getCommentsByBookId($id);
+        }
+
+        $comment = $this->entityManager->getRepository(Comment::class)->findBy(["book" => $id]);
+
         return new JsonResponse($comment);
     }
 
@@ -83,17 +90,20 @@ class CommentController extends AbstractController
             $requestData['text'],
             $requestData['user'],
             $requestData['book']
-        ))
+        )) {
             throw new Exception("Put values");
+        }
 
         $user = $this->entityManager->getRepository(User::class)->find($requestData['user']);
 
-        if (!$user)
+        if (!$user) {
             throw new Exception("There is no user with id " . $requestData['user']);
+        }
 
         $book = $this->entityManager->getRepository(Book::class)->find($requestData['book']);
-        if (!$book)
+        if (!$book) {
             throw new Exception("There is no book with id " . $requestData['genre']);
+        }
 
         $comment = new Comment();
         date_default_timezone_set('Europe/Kiev');
@@ -120,8 +130,9 @@ class CommentController extends AbstractController
     {
         $comment = $this->entityManager->getRepository(Comment::class)->find($id);
 
-        if (!$comment)
+        if (!$comment) {
             throw new Exception("There is no comment with id " . $id);
+        }
 
         $comment->setText("new text!");
         $this->entityManager->flush();
@@ -139,8 +150,9 @@ class CommentController extends AbstractController
     {
         $comment = $this->entityManager->getRepository(Book::class)->find($id);
 
-        if (!$comment)
+        if (!$comment) {
             throw new Exception("There is no comment with id " . $id);
+        }
 
         $comment->setText($comment->getText() . "new text!!!!!!");
         $this->entityManager->flush();
@@ -157,10 +169,14 @@ class CommentController extends AbstractController
     public function delete(string $id): JsonResponse
     {
         $comment = $this->entityManager->getRepository(Comment::class)->find($id);
-        if (!$comment)
+
+        if (!$comment) {
             throw new Exception("There is no comment with id " . $id);
+        }
+
         $this->entityManager->remove($comment);
         $this->entityManager->flush();
-        return new JsonResponse($this->entityManager->getRepository(Comment::class)->findAll());
+
+        return new JsonResponse();
     }
 }

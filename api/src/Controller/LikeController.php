@@ -31,10 +31,11 @@ class LikeController extends AbstractController
     /**
      * @return JsonResponse
      */
-    #[Route('/like', name: 'all_likes')]
+    #[Route('like', name: 'all_likes')]
     public function index(): JsonResponse
     {
         $likes = $this->entityManager->getRepository(Like::class)->findAll();
+
         return new JsonResponse($likes);
     }
 
@@ -43,14 +44,17 @@ class LikeController extends AbstractController
      * @return JsonResponse
      * @throws Exception
      */
-    #[Route('/like/user/{id}', name: 'user_likes')]
+    #[Route('like/user/{id}', name: 'user_likes')]
     public function userLikes(string $id): JsonResponse
     {
         $user = $this->entityManager->getRepository(User::class)->find($id);
-        if (!$user)
-            throw new Exception("There is no user with id " . $id);
 
-        $likes = $this->entityManager->getRepository(Like::class)->findAllByUserId($id);
+        if (!$user) {
+            throw new Exception("There is no user with id " . $id);
+        }
+
+        $likes = $this->entityManager->getRepository(Like::class)->findBy(["user" => $id]);
+
         return new JsonResponse($likes);
     }
 
@@ -59,14 +63,17 @@ class LikeController extends AbstractController
      * @return JsonResponse
      * @throws Exception
      */
-    #[Route('/like/book/{id}', name: 'user_likes')]
+    #[Route('like/book/{id}', name: 'book_likes')]
     public function bookLikes(string $id): JsonResponse
     {
         $book = $this->entityManager->getRepository(Book::class)->find($id);
-        if (!$book)
-            throw new Exception("There is no book with id " . $id);
 
-        $likes = $this->entityManager->getRepository(Like::class)->findAllByBookId($id);
+        if (!$book) {
+            throw new Exception("There is no book with id " . $id);
+        }
+
+        $likes = $this->entityManager->getRepository(Like::class)->findBy(["book" => $id]);
+
         return new JsonResponse($likes);
     }
 
@@ -83,17 +90,22 @@ class LikeController extends AbstractController
         if (!isset(
             $requestData['user'],
             $requestData['book']
-        ))
+        )) {
             throw new Exception("Put values");
+        }
 
         $user = $this->entityManager->getRepository(User::class)->find($requestData['user']);
 
-        if (!$user)
+        if (!$user) {
             throw new Exception("There is no user with id " . $requestData['user']);
+        }
+
         $book = $this->entityManager->getRepository(Book::class)->find($requestData['book']);
 
-        if (!$book)
+        if (!$book) {
             throw new Exception("There is no book with id " . $requestData['book']);
+        }
+
         $like = new Like();
         $like
             ->setUser($user)
@@ -114,10 +126,14 @@ class LikeController extends AbstractController
     public function delete(string $id): JsonResponse
     {
         $like = $this->entityManager->getRepository(Like::class)->find($id);
-        if (!$like)
+
+        if (!$like) {
             throw new Exception("There is no like with id " . $id);
+        }
+
         $this->entityManager->remove($like);
         $this->entityManager->flush();
-        return new JsonResponse($this->entityManager->getRepository(Like::class)->findAll());
+
+        return new JsonResponse();
     }
 }

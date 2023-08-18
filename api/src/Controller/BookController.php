@@ -36,6 +36,7 @@ class BookController extends AbstractController
     public function index(): JsonResponse
     {
         $books = $this->entityManager->getRepository(Book::class)->findAll();
+
         return new JsonResponse($books);
     }
 
@@ -48,8 +49,10 @@ class BookController extends AbstractController
     public function read(string $id): JsonResponse
     {
         $user = $this->entityManager->getRepository(Book::class)->find($id);
-        if (!$user)
+
+        if (!$user) {
             throw new Exception("There is no book with id " . $id);
+        }
 
         return new JsonResponse($user);
     }
@@ -71,19 +74,24 @@ class BookController extends AbstractController
             $requestData['author'],
             $requestData['visible'],
             $requestData['genre']
-        ))
+        )) {
             throw new Exception("Put values");
+        }
 
         $author = $this->entityManager->getRepository(User::class)->find($requestData['author']);
 
-        if (!$author)
+        if (!$author) {
             throw new Exception("There is no user with id " . $requestData['author']);
-        if ($author->getRole()->getRole() !== "author")
-            throw new Exception("Change your role to add the book.");
+        }
 
+        if ($author->getRole()->getRole() !== "author") {
+            throw new Exception("Change your role to add the book.");
+        }
         $genre = $this->entityManager->getRepository(Genre::class)->find($requestData['genre']);
-        if (!$genre)
+
+        if (!$genre) {
             throw new Exception("There is no genre with id " . $requestData['genre']);
+        }
 
         $book = new Book();
         date_default_timezone_set('Europe/Kiev');
@@ -113,8 +121,9 @@ class BookController extends AbstractController
     {
         $book = $this->entityManager->getRepository(Book::class)->find($id);
 
-        if (!$book)
+        if (!$book) {
             throw new Exception("There is no book with id " . $id);
+        }
 
         $book->setText("new text!");
         $this->entityManager->flush();
@@ -132,8 +141,9 @@ class BookController extends AbstractController
     {
         $book = $this->entityManager->getRepository(Book::class)->find($id);
 
-        if (!$book)
+        if (!$book) {
             throw new Exception("There is no book with id " . $id);
+        }
 
         $book->setText($book->getText() . "new text!!!!!!");
         $this->entityManager->flush();
@@ -150,10 +160,14 @@ class BookController extends AbstractController
     public function delete(string $id): JsonResponse
     {
         $book = $this->entityManager->getRepository(Book::class)->find($id);
-        if (!$book)
+
+        if (!$book) {
             throw new Exception("There is no book with id " . $id);
+        }
+
         $this->entityManager->remove($book);
         $this->entityManager->flush();
-        return new JsonResponse($this->entityManager->getRepository(Book::class)->findAll());
+
+        return new JsonResponse();
     }
 }
