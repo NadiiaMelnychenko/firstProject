@@ -11,12 +11,23 @@ use JsonSerializable;
 #[ORM\Table(name: '`like`')]
 class Like implements JsonSerializable
 {
+    /**
+     * @var int|null
+     */
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
+
+    /**
+     * @var User|null
+     */
     #[ORM\ManyToOne(targetEntity: User::class, inversedBy: "likes")]
     private ?User $user = null;
+
+    /**
+     * @var Book|null
+     */
     #[ORM\ManyToOne(targetEntity: Book::class, inversedBy: "likes")]
     private ?Book $book = null;
 

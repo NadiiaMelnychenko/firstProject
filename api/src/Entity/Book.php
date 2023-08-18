@@ -13,32 +13,65 @@ use Doctrine\Common\Collections\Collection;
 #[ORM\Entity(repositoryClass: BookRepository::class)]
 class Book implements JsonSerializable
 {
+    /**
+     * @var int|null
+     */
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
 
+    /**
+     * @var string|null
+     */
     #[ORM\Column(length: 255)]
     private ?string $title = null;
 
+    /**
+     * @var string|null
+     */
     #[ORM\Column(length: 255)]
     private ?string $plot = null;
 
+    /**
+     * @var string|null
+     */
     #[ORM\Column(type: Types::TEXT)]
     private ?string $text = null;
 
+    /**
+     * @var DateTimeInterface|null
+     */
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?DateTimeInterface $date = null;
 
+    /**
+     * @var bool|null
+     */
     #[ORM\Column]
     private ?bool $visible = false;
 
+    /**
+     * @var User|null
+     */
     #[ORM\ManyToOne(targetEntity: User::class, inversedBy: "books")]
     private ?User $user = null;
+
+    /**
+     * @var Genre|null
+     */
     #[ORM\ManyToOne(targetEntity: Genre::class, inversedBy: "genres")]
     private ?Genre $genre = null;
+
+    /**
+     * @var Collection
+     */
     #[ORM\OneToMany(mappedBy: "books", targetEntity: Comment::class)]
     private Collection $comments;
+
+    /**
+     * @var Collection
+     */
     #[ORM\OneToMany(mappedBy: "likes", targetEntity: Like::class)]
     private Collection $likes;
 

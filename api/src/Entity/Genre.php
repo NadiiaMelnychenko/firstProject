@@ -11,14 +11,23 @@ use Doctrine\Common\Collections\Collection;
 #[ORM\Entity(repositoryClass: GenreRepository::class)]
 class Genre implements JsonSerializable
 {
+    /**
+     * @var int|null
+     */
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
 
+    /**
+     * @var string|null
+     */
     #[ORM\Column(length: 255)]
     private ?string $type = null;
 
+    /**
+     * @var Collection
+     */
     #[ORM\OneToMany(mappedBy: "genres", targetEntity: Book::class)]
     private Collection $books;
 

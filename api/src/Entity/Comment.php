@@ -11,18 +11,35 @@ use JsonSerializable;
 #[ORM\Entity(repositoryClass: CommentRepository::class)]
 class Comment implements JsonSerializable
 {
+    /**
+     * @var int|null
+     */
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
 
+    /**
+     * @var DateTimeInterface|null
+     */
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $date = null;
 
+    /**
+     * @var string|null
+     */
     #[ORM\Column(type: Types::TEXT)]
     private ?string $text = null;
+
+    /**
+     * @var User|null
+     */
     #[ORM\ManyToOne(targetEntity: User::class, inversedBy: "comments")]
     private ?User $user = null;
+
+    /**
+     * @var Book|null
+     */
     #[ORM\ManyToOne(targetEntity: Book::class, inversedBy: "comments")]
     private ?Book $book = null;
 

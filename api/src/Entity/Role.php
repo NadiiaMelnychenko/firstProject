@@ -11,13 +11,23 @@ use JsonSerializable;
 #[ORM\Entity(repositoryClass: RoleRepository::class)]
 class Role implements JsonSerializable
 {
+    /**
+     * @var int|null
+     */
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
 
+    /**
+     * @var string|null
+     */
     #[ORM\Column(length: 255)]
     private ?string $role = null;
+
+    /**
+     * @var Collection
+     */
     #[ORM\OneToMany(mappedBy: "roles", targetEntity: User::class)]
     private Collection $users;
 

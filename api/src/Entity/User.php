@@ -12,32 +12,61 @@ use JsonSerializable;
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 class User implements JsonSerializable
 {
+    /**
+     * @var int|null
+     */
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
 
+    /**
+     * @var string|null
+     */
     #[ORM\Column(length: 255)]
     private ?string $name = null;
 
+    /**
+     * @var string|null
+     */
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $about = null;
 
+    /**
+     * @var string|null
+     */
     #[ORM\Column(length: 255)]
     private ?string $login = null;
 
+    /**
+     * @var string|null
+     */
     #[ORM\Column(length: 255)]
     private ?string $password = null;
 
+    /**
+     * @var Role|null
+     */
     #[ORM\ManyToOne(targetEntity: Role::class, inversedBy: "users")]
     private ?Role $role = null;
+
+    /**
+     * @var Collection
+     */
     #[ORM\OneToMany(mappedBy: "users", targetEntity: Book::class)]
     private Collection $books;
+
+    /**
+     * @var Collection
+     */
     #[ORM\OneToMany(mappedBy: "likes", targetEntity: Like::class)]
     private Collection $likes;
+
+    /**
+     * @var Collection
+     */
     #[ORM\OneToMany(mappedBy: "users", targetEntity: Comment::class)]
     private Collection $comments;
-
 
     /**
      * Comment Constructor
