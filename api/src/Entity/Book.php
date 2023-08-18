@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Repository\BookRepository;
 use DateTimeInterface;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use JsonSerializable;
@@ -40,6 +41,16 @@ class Book implements JsonSerializable
     private Collection $comments;
     #[ORM\OneToMany(mappedBy: "likes", targetEntity: Like::class)]
     private Collection $likes;
+
+    /**
+     * Comment Constructor
+     * Like Constructor
+     */
+    public function __construct()
+    {
+        $this->comments = new ArrayCollection();
+        $this->likes = new ArrayCollection();
+    }
 
     /**
      * @return Collection

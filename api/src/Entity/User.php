@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\UserRepository;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
@@ -34,6 +35,21 @@ class User implements JsonSerializable
     private Collection $books;
     #[ORM\OneToMany(mappedBy: "likes", targetEntity: Like::class)]
     private Collection $likes;
+    #[ORM\OneToMany(mappedBy: "users", targetEntity: Comment::class)]
+    private Collection $comments;
+
+
+    /**
+     * Comment Constructor
+     * Book Constructor
+     * Like Constructor
+     */
+    public function __construct()
+    {
+        $this->comments = new ArrayCollection();
+        $this->books = new ArrayCollection();
+        $this->likes = new ArrayCollection();
+    }
 
     /**
      * @return Collection
@@ -88,9 +104,6 @@ class User implements JsonSerializable
         $this->comments = $comments;
         return $this;
     }
-
-    #[ORM\OneToMany(mappedBy: "users", targetEntity: Comment::class)]
-    private Collection $comments;
 
     /**
      * @return Role|null

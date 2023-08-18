@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\RoleRepository;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use JsonSerializable;
@@ -19,6 +20,14 @@ class Role implements JsonSerializable
     private ?string $role = null;
     #[ORM\OneToMany(mappedBy: "roles", targetEntity: User::class)]
     private Collection $users;
+
+    /**
+     * User Constructor
+     */
+    public function __construct()
+    {
+        $this->users = new ArrayCollection();
+    }
 
     /**
      * @return Collection

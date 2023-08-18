@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\GenreRepository;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use JsonSerializable;
 use Doctrine\Common\Collections\Collection;
@@ -20,6 +21,14 @@ class Genre implements JsonSerializable
 
     #[ORM\OneToMany(mappedBy: "genres", targetEntity: Book::class)]
     private Collection $books;
+
+    /**
+     * Book Constructor
+     */
+    public function __construct()
+    {
+        $this->books = new ArrayCollection();
+    }
 
     /**
      * @return Collection
