@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Product;
 use Doctrine\ORM\EntityManagerInterface;
+use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -27,11 +28,20 @@ class TestController extends AbstractController
     /**
      * @param Request $request
      * @return JsonResponse
+     * @throws Exception
      */
     #[Route(path: "test", name: "app_test")]
     public function test(Request $request): JsonResponse
     {
-        $products = $this->entityManager->getRepository(Product::class)->getAllProductsByName("test");
+        $requestData = $request->query->all();
+
+        $products = $this->entityManager->getRepository(Product::class)->getAllProductsByName(
+            $requestData["itemsPerPage"] ?? 30,
+            $requestData["page"] ?? 1,
+            $requestData["categoryName"] ?? null,
+            $requestData["name"] ?? null
+        );
+
         return new JsonResponse($products);
     }
 }
