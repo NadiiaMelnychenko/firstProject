@@ -163,6 +163,4 @@ class BookController extends AbstractController
 
         return new JsonResponse();
     }
-
-
 }

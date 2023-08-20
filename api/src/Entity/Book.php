@@ -226,7 +226,6 @@ class Book implements JsonSerializable
         return $this;
     }
 
-
     /**
      * @return array
      */
@@ -238,9 +237,10 @@ class Book implements JsonSerializable
             "author"  => $this->getAuthor(),
             "plot"    => $this->getPlot(),
             "text"    => $this->getText(),
-            "price"   =>$this->getPrice(),
+            "price"   => $this->getPrice(),
             "date"    => $this->getDate()->format("Y-m-d H:i"),
-            "visible" => $this->isVisible()
+            "visible" => $this->isVisible(),
+            "genre"   => $this->getGenre()
         ];
     }
 }
