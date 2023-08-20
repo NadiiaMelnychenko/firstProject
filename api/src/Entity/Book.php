@@ -40,7 +40,7 @@ class Book implements JsonSerializable
     /**
      * @var string|null
      */
-    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[ORM\Column(type: Types::TEXT)]
     private ?string $text = null;
 
     /**
@@ -141,10 +141,10 @@ class Book implements JsonSerializable
     }
 
     /**
-     * @param string|null $text
+     * @param string $text
      * @return $this
      */
-    public function setText(?string $text): self
+    public function setText(string $text): self
     {
         $this->text = $text;
 
@@ -238,7 +238,8 @@ class Book implements JsonSerializable
             "author"  => $this->getAuthor(),
             "plot"    => $this->getPlot(),
             "text"    => $this->getText(),
-            "date"    => $this->getDate(),
+            "price"   =>$this->getPrice(),
+            "date"    => $this->getDate()->format("Y-m-d H:i"),
             "visible" => $this->isVisible()
         ];
     }
