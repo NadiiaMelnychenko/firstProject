@@ -37,10 +37,11 @@ class BookRepository extends ServiceEntityRepository
         $metadata = $this->_em->getClassMetadata(Book::class);
 
         foreach ($params as $key => $value) {
+            $key = strtolower($key);
             $fieldMapping = $key == 'genre' ? 'integer' : $metadata->getTypeOfField($key);
 
-            $min = str_starts_with($key, 'min_');
-            $max = str_starts_with($key, 'max_');
+            $min = str_starts_with($key, 'min');
+            $max = str_starts_with($key, 'max');
 
             if (!isset($fieldMapping) && !$min && !$max) {
                 throw new Error("Error field name");
@@ -49,7 +50,7 @@ class BookRepository extends ServiceEntityRepository
             $condition = in_array($fieldMapping, ['integer', 'decimal']) ? '=' : 'LIKE';
 
             if ($min || $max) {
-                $key = substr($key, 4);
+                $key = substr($key, 3);
                 $condition = $min ? '>=' : '<=';
             }
 
@@ -76,8 +77,8 @@ class BookRepository extends ServiceEntityRepository
 //    'visible' => ['field' => 'visible', 'condition' => 'LIKE'],
 //    'genre' => ['field' => 'genre', 'condition' => '='],
 //    'price' => ['field' => 'price', 'condition' => '='],
-//    'min_price' => ['field' => 'price', 'condition' => '>='],
-//    'max_price' => ['field' => 'price', 'condition' => '<='],
+//    'minPrice' => ['field' => 'price', 'condition' => '>='],
+//    'maxPrice' => ['field' => 'price', 'condition' => '<='],
 //];
 //$metadata = $this->_em->getClassMetadata(Book::class);
 //
@@ -93,3 +94,12 @@ class BookRepository extends ServiceEntityRepository
 //        ->setParameter($key, $condition === 'LIKE' ? '%' . $value . '%' : $value);
 //}
 
+
+//$key = strtolower($key);
+//if(str_contains($key, 'genre')){
+//    $key = substr($key, 5);
+//    $queryBuilder->join('book.genre', 'genre')
+//        ->andWhere("genre.$key LIKE :$key")
+//        ->setParameter($key, '%' . $value . '%');
+//    continue;
+//}
