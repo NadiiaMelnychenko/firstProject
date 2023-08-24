@@ -7,6 +7,7 @@ use App\Entity\Genre;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -62,6 +63,7 @@ class BookController extends AbstractController
      * @throws Exception
      */
     #[Route('book/create', name: 'create_book')]
+    #[IsGranted("ROLE_ADMIN")]
     public function create(Request $request): JsonResponse
     {
         $requestData = json_decode($request->getContent(), true);
@@ -110,6 +112,7 @@ class BookController extends AbstractController
      * @throws Exception
      */
     #[Route('book/update/{id}', name: 'update_book')]
+    #[IsGranted("ROLE_ADMIN")]
     public function update(string $id): JsonResponse
     {
         $book = $this->entityManager->getRepository(Book::class)->find($id);
@@ -130,6 +133,7 @@ class BookController extends AbstractController
      * @throws Exception
      */
     #[Route('book/update/text/{id}', name: 'update_book_text')]
+    #[IsGranted("ROLE_ADMIN")]
     public function updateText(string $id): JsonResponse
     {
         $book = $this->entityManager->getRepository(Book::class)->find($id);
@@ -150,6 +154,7 @@ class BookController extends AbstractController
      * @throws Exception
      */
     #[Route('book/delete/{id}', name: 'book_delete')]
+    #[IsGranted("ROLE_ADMIN")]
     public function delete(string $id): JsonResponse
     {
         $book = $this->entityManager->getRepository(Book::class)->find($id);
