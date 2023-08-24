@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Book;
+use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -25,26 +26,38 @@ class TestController extends AbstractController
         $this->entityManager = $entityManager;
     }
 
-    /**
-     * @param Request $request
-     * @return JsonResponse
-     * @throws Exception
-     */
     #[Route(path: "test", name: "app_test")]
     public function test(Request $request): JsonResponse
     {
-        $requestData = $request->query->all();
+        $pass = '123456';
+        $user = new User();
+        $user->setEmail("admin@gmail.com");
 
-        $books = $this->entityManager
-            ->getRepository(Book::class)
-            ->getAllBooksByParams(
-                $requestData["itemsPerPage"] ?? 30,
-                $requestData["page"] ?? 1,
-                array_diff_key($requestData, ["itemsPerPage" => null, "page" => null])
-            );
 
-        return new JsonResponse($books);
+
     }
+
+
+//    /**
+//     * @param Request $request
+//     * @return JsonResponse
+//     * @throws Exception
+//     */
+//    #[Route(path: "test", name: "app_test")]
+//    public function test(Request $request): JsonResponse
+//    {
+//        $requestData = $request->query->all();
+//
+//        $books = $this->entityManager
+//            ->getRepository(Book::class)
+//            ->getAllBooksByParams(
+//                $requestData["itemsPerPage"] ?? 30,
+//                $requestData["page"] ?? 1,
+//                array_diff_key($requestData, ["itemsPerPage" => null, "page" => null])
+//            );
+//
+//        return new JsonResponse($books);
+//    }
 }
 //            $requestData["itemsPerPage"] ?? 30,
 //            $requestData["page"] ?? 1,
