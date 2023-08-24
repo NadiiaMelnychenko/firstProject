@@ -8,3 +8,6 @@ div.user div{
 .selected{
     background-color: greenyellow;
 }
+table{
+    border: 1px solid black;
+}

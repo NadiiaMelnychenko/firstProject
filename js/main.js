@@ -40,6 +40,15 @@ let page = {
 
 let str = `${user.getLogin()} text `;
 
+let elem = document.querySelector('.panel .header .title');
+// console.log(elems);
+// for (let elem of elems) {
+//     elem.classList.add('selected');
+//     console.log(elem);
+// }
+elem.textContent = "text";
+
+console.log(document.body.children);
 
 //-----------------------------------------------------------------------------------
 let arr = [
@@ -66,12 +75,15 @@ class UserPanels {
 
     constructor(userArray) {
         this.#userArray = userArray;
-        this.#stateArray = new Array(this.#userArray.length);
+        this.initializeStateArray();
+        this.#build();
+    }
 
+    initializeStateArray() {
+        this.#stateArray = new Array(this.#userArray.length);
         for (let i = 0; i < this.#stateArray.length; i++) {
             this.#stateArray[i] = false;
         }
-        this.#build();
     }
 
     saveState() {
@@ -80,7 +92,12 @@ class UserPanels {
 
     loadState() {
         if (localStorage.getItem('panels-state')) {
-            this.#stateArray = JSON.parse(localStorage.getItem('panels-state'));
+            try {
+                this.#stateArray = JSON.parse(localStorage.getItem('panels-state'));
+            } catch (exception) {
+                this.initializeStateArray();
+                this.saveState();
+            }
         }
     }
 
