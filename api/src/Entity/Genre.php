@@ -33,6 +33,18 @@ class Genre implements JsonSerializable
     private ?string $description = null;
 
     /**
+     * @var string|null
+     */
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $famousBook = null;
+
+    /**
+     * @var string|null
+     */
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $famousAuthor = null;
+
+    /**
      * @var Collection
      */
     #[ORM\OneToMany(mappedBy: "genre", targetEntity: Book::class)]
@@ -107,6 +119,45 @@ class Genre implements JsonSerializable
     public function setBooks(Collection $books): self
     {
         $this->books = $books;
+
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getFamousBook(): ?string
+    {
+        return $this->famousBook;
+    }
+
+    /**
+     * @param string|null $famousBook
+     * @return $this
+     */
+    public function setFamousBook(?string $famousBook): self
+    {
+        $this->famousBook = $famousBook;
+
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getFamousAuthor(): ?string
+    {
+        return $this->famousAuthor;
+    }
+
+    /**
+     * @param string|null $famousAuthor
+     * @return $this
+     */
+    public function setFamousAuthor(?string $famousAuthor): self
+    {
+        $this->famousAuthor = $famousAuthor;
+
         return $this;
     }
 
@@ -118,8 +169,9 @@ class Genre implements JsonSerializable
         return [
             "id"           => $this->getId(),
             "type"         => $this->getType(),
-            "description"  => $this->getDescription()
+            "description"  => $this->getDescription(),
+            "famousBook"   => $this->getFamousBook(),
+            "famousAuthor" => $this->getFamousAuthor()
         ];
     }
-
 }
