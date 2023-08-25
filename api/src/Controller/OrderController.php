@@ -56,15 +56,6 @@ class OrderController extends AbstractController
     {
         $fetchedOrdersForUser = null;
 
-        if (!is_array($orders)) {
-            /** @var User $user */
-            if ($orders->getUser()?->getId() === $user->getId()) {
-                $fetchedOrdersForUser[] = $orders->jsonSerialize();
-            }
-
-            return ($fetchedOrdersForUser);
-        }
-
         /** @var Order $order */
         foreach ($orders as $order) {
             /** @var User $user */
@@ -204,7 +195,7 @@ class OrderController extends AbstractController
     {
         /** @var User $user */
         if ($order->getUser()?->getId() !== $user->getId()) {
-            throw new Exception("This is not your order");
+            throw new Exception("This is not your order", Response::HTTP_NOT_FOUND);
         }
     }
 }
