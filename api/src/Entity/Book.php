@@ -70,20 +70,6 @@ class Book implements JsonSerializable
     private ?Genre $genre = null;
 
     /**
-     * @var Collection
-     */
-    #[ORM\OneToMany(mappedBy: "book", targetEntity: Order::class)]
-    private Collection $orders;
-
-    /**
-     * Book constructor
-     */
-    public function __construct()
-    {
-        $this->orders = new ArrayCollection();
-    }
-
-    /**
      * @return int|null
      */
     public function getId(): ?int
@@ -107,24 +93,6 @@ class Book implements JsonSerializable
     {
         $this->title = $title;
 
-        return $this;
-    }
-
-    /**
-     * @return Collection
-     */
-    public function getOrders(): Collection
-    {
-        return $this->orders;
-    }
-
-    /**
-     * @param Collection $orders
-     * @return $this
-     */
-    public function setOrders(Collection $orders): self
-    {
-        $this->orders = $orders;
         return $this;
     }
 

@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\OrderRepository;
+use DateTimeInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
@@ -21,17 +22,17 @@ class Order implements JsonSerializable
     #[ORM\Column]
     private ?int $id = null;
 
-//    /**
-//     * @var string|null
-//     */
-//    #[ORM\Column(length: 255)]
-//    private ?string $books = null;
-
     /**
      * @var string|null
      */
     #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: '0')]
-    private ?string $summ = null;
+    private ?string $sum = null;
+
+    /**
+     * @var DateTimeInterface|null
+     */
+    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    private ?DateTimeInterface $time = null;
 
     /**
      * @var User|null
@@ -39,11 +40,17 @@ class Order implements JsonSerializable
     #[ORM\ManyToOne(targetEntity: User::class, inversedBy: "orders")]
     private ?User $user = null;
 
+//    /**
+//     * @var Book|null
+//     */
+//    #[ORM\ManyToOne(targetEntity: Book::class, inversedBy: "orders")]
+//    private ?Book $book = null;
+
     /**
-     * @var Book|null
+     * @var string|null
      */
-    #[ORM\ManyToOne(targetEntity: Book::class, inversedBy: "orders")]
-    private ?Book $book = null;
+    #[ORM\Column(type: Types::TEXT)]
+    private ?string $books = null;
 
     /**
      * @return int|null
@@ -54,20 +61,20 @@ class Order implements JsonSerializable
     }
 
     /**
-     * @return Book|null
+     * @return string|null
      */
-    public function getBook(): ?Book
+    public function getBooks(): ?string
     {
-        return $this->book;
+        return $this->books;
     }
 
     /**
-     * @param Book|null $book
+     * @param string|null $books
      * @return $this
      */
-    public function setBook(?Book $book): self
+    public function setBooks(?string $books): self
     {
-        $this->book = $book;
+        $this->books = $books;
         return $this;
     }
 
@@ -93,18 +100,37 @@ class Order implements JsonSerializable
     /**
      * @return string|null
      */
-    public function getSumm(): ?string
+    public function getSum(): ?string
     {
-        return $this->summ;
+        return $this->sum;
     }
 
     /**
-     * @param string $summ
+     * @param string $sum
      * @return $this
      */
-    public function setSumm(string $summ): self
+    public function setSum(string $sum): self
     {
-        $this->summ = $summ;
+        $this->sum = $sum;
+
+        return $this;
+    }
+
+    /**
+     * @return DateTimeInterface|null
+     */
+    public function getTime(): ?DateTimeInterface
+    {
+        return $this->time;
+    }
+
+    /**
+     * @param DateTimeInterface $time
+     * @return $this
+     */
+    public function setTime(DateTimeInterface $time): self
+    {
+        $this->time = $time;
 
         return $this;
     }
@@ -116,8 +142,9 @@ class Order implements JsonSerializable
     {
         return [
             "id"    => $this->getId(),
-            "books" => $this->getBook(),
-            "summ"  => $this->getSumm(),
+            "books" => $this->getBooks(),
+            "sum"  => $this->getSum(),
+            "time" => $this->getTime()->format('Y-m-d H:i'),
             "user"  => $this->getUser()
         ];
     }
