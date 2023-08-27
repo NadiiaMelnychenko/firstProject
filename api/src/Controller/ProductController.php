@@ -2,14 +2,15 @@
 
 namespace App\Controller;
 
-use App\Entity\Category;
 use App\Entity\Product;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 
 class ProductController extends AbstractController
@@ -28,50 +29,10 @@ class ProductController extends AbstractController
     }
 
     /**
-     * @param Request $request
-     * @return JsonResponse
-     * @throws Exception
-     */
-    #[Route('product-create', name: 'product_create')]
-    public function create(Request $request): JsonResponse
-    {
-        $requestData = json_decode($request->getContent(), true);
-
-        if (!isset(
-            $requestData['name'],
-            $requestData['price'],
-            $requestData['description'],
-            $requestData['category']
-        )) {
-            throw new Exception("Invalid request data");
-        }
-
-        $category = $this->entityManager->getRepository(Category::class)->find($requestData['category']);
-
-        if (!$category) {
-            throw new Exception("Category with id " . $requestData['category'] . " not found");
-        }
-
-        $product = new Product();
-
-        $product
-            ->setName($requestData['name'])
-            ->setPrice($requestData['price'])
-            ->setDescription($requestData['description'])
-            ->setCategory($category);
-
-        $this->entityManager->persist($product);
-        $this->entityManager->flush();
-
-
-        return new JsonResponse($product, Response::HTTP_CREATED);
-    }
-
-    /**
      * @return JsonResponse
      */
-    #[Route('product-all', name: 'product_all')]
-    public function read(): JsonResponse
+    #[Route('/products', name: 'app_products', methods: "GET")]
+    public function index(): JsonResponse
     {
         $products = $this->entityManager->getRepository(Product::class)->findAll();
 
@@ -79,61 +40,96 @@ class ProductController extends AbstractController
     }
 
     /**
-     * @param string $id
+     * @param Request $request
      * @return JsonResponse
      * @throws Exception
      */
-    #[Route('product/{id}', name: 'product_get_item')]
-    public function getItem(string $id): JsonResponse
+    #[Route('/products', name: 'create_product', methods: "POST")]
+    #[IsGranted("ROLE_ADMIN")]
+    public function create(Request $request): JsonResponse
     {
-        $product = $this->entityManager->getRepository(Product::class)->find($id);
+        $requestData = json_decode($request->getContent(), true);
 
-        if (!$product) {
-            throw new Exception("Product with id " . $id . " not found");
+        if (!isset(
+            $requestData['name'],
+            $requestData['price'],
+        )) {
+            throw new Exception("Put values");
         }
 
-        return new JsonResponse($product);
-    }
+        $product = new Product();
+        $product
+            ->setName($requestData['name'])
+            ->setDescription($requestData['description'] ?? "")
+            ->setPrice($requestData["price"]);
 
-    /**
-     * @param string $id
-     * @return JsonResponse
-     * @throws Exception
-     */
-    #[Route('product-update/{id}', name: 'product_update_item')]
-    public function updateProduct(string $id): JsonResponse
-    {
-        /** @var Product $product */
-        $product = $this->entityManager->getRepository(Product::class)->find($id);
-
-        if (!$product) {
-            throw new Exception("Product with id " . $id . " not found");
-        }
-
-        $product->setName("New name");
+        $this->entityManager->persist($product);
         $this->entityManager->flush();
 
+        return new JsonResponse($product, Response::HTTP_CREATED);
+    }
+
+    /**
+     * @param string $id
+     * @return JsonResponse
+     */
+    #[Route('/products/{id}', name: 'product_get_item', methods: "GET")]
+    public function read(string $id): JsonResponse
+    {
+        $product = $this->entityManager->getRepository(Product::class)->find($id);
+
+        if (!$product) {
+            throw new NotFoundHttpException();
+        }
+
         return new JsonResponse($product);
     }
 
     /**
      * @param string $id
      * @return JsonResponse
-     * @throws Exception
      */
-    #[Route('product-delete/{id}', name: 'product_delete_item')]
-    public function deleteProduct(string $id): JsonResponse
+    #[Route('/products/{id}', name: 'product_delete_item', methods: "DELETE")]
+    #[IsGranted("ROLE_ADMIN")]
+    public function delete(string $id): JsonResponse
     {
-        /** @var Product $product */
         $product = $this->entityManager->getRepository(Product::class)->find($id);
 
         if (!$product) {
-            throw new Exception("Product with id " . $id . " not found");
+            throw new NotFoundHttpException();
         }
 
         $this->entityManager->remove($product);
         $this->entityManager->flush();
 
         return new JsonResponse();
+    }
+
+
+    /**
+     * @param string $id
+     * @param Request $request
+     * @return JsonResponse
+     */
+    #[Route('/products/{id}', name: 'update_product', methods: "PUT")]
+    #[IsGranted("ROLE_ADMIN")]
+    public function update(string $id, Request $request): JsonResponse
+    {
+        $requestData = $request->query->all();
+        $product = $this->entityManager->getRepository(Product::class)->find($id);
+
+        if (!$product) {
+            throw new NotFoundHttpException();
+        }
+
+        $updatedProduct = $product;
+
+        foreach ($requestData as $key => $field) {
+            $this->entityManager->getRepository(Product::class)->updateProductByField($id, $key, $field);
+        }
+
+        $this->entityManager->flush();
+
+        return new JsonResponse($product);
     }
 }

@@ -3,7 +3,6 @@
 namespace App\Entity;
 
 use App\Repository\ProductRepository;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use JsonSerializable;
@@ -11,80 +10,31 @@ use JsonSerializable;
 #[ORM\Entity(repositoryClass: ProductRepository::class)]
 class Product implements JsonSerializable
 {
+    /**
+     * @var int|null
+     */
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
 
+    /**
+     * @var string|null
+     */
     #[ORM\Column(length: 255)]
     private ?string $name = null;
 
-    #[ORM\Column(type: Types::DECIMAL, precision: 2, scale: '0')]
-    private ?string $price = null;
-
+    /**
+     * @var string|null
+     */
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $description = null;
 
-    #[ORM\ManyToOne(targetEntity: Category::class, inversedBy: "products")]
-    private ?Category $category = null;
-//
-//    #[ORM\OneToOne(targetEntity: ProductInfo::class)]
-//    private ?ProductInfo $productInfo = null;
-
-    #[ORM\ManyToMany(targetEntity: Test::class)]
-    private Collection $test;
-
     /**
-     * @return Collection
+     * @var string|null
      */
-    public function getTest(): Collection
-    {
-        return $this->test;
-    }
-
-    /**
-     * @param Collection $test
-     * @return void
-     */
-    public function setTest(Collection $test): void
-    {
-        $this->test = $test;
-    }
-
-    /**
-     * @return Category|null
-     */
-    public function getCategory(): ?Category
-    {
-        return $this->category;
-    }
-
-    /**
-     * @param Category|null $category
-     * @return void
-     */
-    public function setCategory(?Category $category): void
-    {
-        $this->category = $category;
-    }
-
-    /**
-     * @return ProductInfo|null
-     */
-    public function getProductInfo(): ?ProductInfo
-    {
-        return $this->productInfo;
-    }
-
-    /**
-     * @param ProductInfo|null $productInfo
-     * @return void
-     */
-    public function setProductInfo(?ProductInfo $productInfo): void
-    {
-        $this->productInfo = $productInfo;
-    }
-
+    #[ORM\Column(type: Types::DECIMAL, precision: 5, scale: 2)]
+    private ?string $price = null;
 
     /**
      * @return int|null
@@ -103,32 +53,12 @@ class Product implements JsonSerializable
     }
 
     /**
-     * @param string $name
+     * @param string|null $name
      * @return $this
      */
-    public function setName(string $name): self
+    public function setName(?string $name): self
     {
         $this->name = $name;
-
-        return $this;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getPrice(): ?string
-    {
-        return $this->price;
-    }
-
-    /**
-     * @param string $price
-     * @return $this
-     */
-    public function setPrice(string $price): self
-    {
-        $this->price = $price;
-
         return $this;
     }
 
@@ -152,16 +82,34 @@ class Product implements JsonSerializable
     }
 
     /**
+     * @return string|null
+     */
+    public function getPrice(): ?string
+    {
+        return $this->price;
+    }
+
+    /**
+     * @param string|null $price
+     * @return $this
+     */
+    public function setPrice(?string $price): self
+    {
+        $this->price = $price;
+
+        return $this;
+    }
+
+    /**
      * @return array
      */
     public function jsonSerialize(): array
     {
         return [
-            "id" => $this->getId(),
-            "name" => $this->getName(),
-            "price" => $this->getPrice(),
+            "id"          => $this->getId(),
+            "name"        => $this->getName(),
             "description" => $this->getDescription(),
-            "category" => $this->getCategory()
+            "price"       => $this->getPrice(),
         ];
     }
 }
