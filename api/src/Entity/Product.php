@@ -3,11 +3,17 @@
 namespace App\Entity;
 
 use App\Repository\ProductRepository;
+use App\Validator\Constraints\ProductConstraint;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use JsonSerializable;
+use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Constraints\NotNull;
+use Symfony\Component\Validator\Constraints\Positive;
+use Symfony\Component\Validator\Constraints\Type;
 
 #[ORM\Entity(repositoryClass: ProductRepository::class)]
+#[ORM\Table(name: '`product`')]
 class Product implements JsonSerializable
 {
     /**
@@ -22,18 +28,25 @@ class Product implements JsonSerializable
      * @var string|null
      */
     #[ORM\Column(length: 255)]
+    #[NotBlank]
+    #[Type('string')]
+    #[NotNull]
     private ?string $name = null;
 
     /**
      * @var string|null
      */
     #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[Type('string')]
     private ?string $description = null;
 
     /**
      * @var string|null
      */
     #[ORM\Column(type: Types::DECIMAL, precision: 5, scale: 2)]
+    #[Positive]
+    #[NotNull]
+    #[ProductConstraint]
     private ?string $price = null;
 
     /**

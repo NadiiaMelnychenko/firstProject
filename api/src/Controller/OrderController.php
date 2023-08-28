@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Order;
 use App\Entity\Product;
 use App\Entity\User;
+use App\Validator\Constraints\OrderConstraint;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -14,6 +15,9 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Serializer\Exception\ExceptionInterface;
+use Symfony\Component\Serializer\Normalizer\DenormalizerInterface;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class OrderController extends AbstractController
 {
@@ -23,11 +27,25 @@ class OrderController extends AbstractController
     private EntityManagerInterface $entityManager;
 
     /**
-     * @param EntityManagerInterface $entityManager
+     * @var DenormalizerInterface
      */
-    public function __construct(EntityManagerInterface $entityManager)
+    private DenormalizerInterface $denormalizer;
+
+    /**
+     * @var ValidatorInterface
+     */
+    private ValidatorInterface $validator;
+
+    /**
+     * @param EntityManagerInterface $entityManager
+     * @param DenormalizerInterface $denormalizer
+     * @param ValidatorInterface $validator
+     */
+    public function __construct(EntityManagerInterface $entityManager, DenormalizerInterface $denormalizer, ValidatorInterface $validator)
     {
         $this->entityManager = $entityManager;
+        $this->denormalizer = $denormalizer;
+        $this->validator = $validator;
     }
 
     /**
@@ -94,6 +112,7 @@ class OrderController extends AbstractController
      * @param Request $request
      * @return JsonResponse
      * @throws Exception
+     * @throws ExceptionInterface
      */
     #[Route('/orders', name: 'create_order', methods: 'POST')]
     #[IsGranted('ROLE_USER')]
@@ -102,35 +121,36 @@ class OrderController extends AbstractController
         $requestData = json_decode($request->getContent(), true);
         $user = $this->getUser();
 
-        if (!isset(
-            $requestData['products']
-        )) {
-            throw new Exception("Put values");
-        }
+//        $userOrders = $this->entityManager->getRepository(Order::class)->findBy(['user'=>$user]);
+//        if(count($userOrders)===3){
+//            throw new Exception('Already have 3 orders');
+//        }
 
-        $productsArray = explode(',', $requestData['products']);
+        $order = $this->denormalizer->denormalize($requestData, Order::class, "array");
 
-        $productsInOrder = null;
+        $products = $this->entityManager->getRepository(Product::class)->findBy(['id' => $requestData['products']]);
 
-        $order = new Order();
-
-        foreach ($productsArray as $item) {
-            $checkProduct = $this->entityManager->getRepository(Product::class)->find($item);
-
-            if (!$checkProduct) {
+        foreach ($products as $item) {
+            if (!$item) {
                 throw new NotFoundHttpException();
             }
 
-            $order->addProduct($checkProduct);
-            $productsInOrder[] = $checkProduct;
+            $order->addProduct($item);
         }
 
-        $orderSum = $this->countOrderSum($productsInOrder);
+        $orderSum = $this->countOrderSum($order->getProducts());
 
         $order
             ->setSum($orderSum)
-            ->setProductsAmount(count($productsInOrder))
-            ->setUser($user);
+            ->setProductsAmount(count($order->getProducts()));
+
+        $errors = $this->validator->validate($order);
+
+        if (count($errors) > 0) {
+            return new JsonResponse((string)$errors);
+        }
+
+        $order->setUser($user);
 
         $this->entityManager->persist($order);
         $this->entityManager->flush();
@@ -149,6 +169,7 @@ class OrderController extends AbstractController
     public function update(string $id, Request $request): JsonResponse
     {
         $requestData = $request->query->all();
+
         $order = $this->entityManager->getRepository(Order::class)->find($id);
         $user = $this->getUser();
 
@@ -162,6 +183,7 @@ class OrderController extends AbstractController
             $product = $this->entityManager->getRepository(Product::class)->find($requestData['add']);
             $order->addProduct($product);
         }
+
         if (array_key_exists('remove', $requestData)) {
             $product = $this->entityManager->getRepository(Product::class)->find($requestData['remove']);
             $order->removeProduct($product);

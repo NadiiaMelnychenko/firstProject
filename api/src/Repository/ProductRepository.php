@@ -32,16 +32,25 @@ class ProductRepository extends ServiceEntityRepository
      */
     public function updateProductByField($id, $key, $value): mixed
     {
-        return $this->createQueryBuilder("product")
-
-            ->update('product', 'e')
-            ->set('e.description', ':value')
-            ->where('e.id = :id')
-            ->setParameter('key', $key)
-            ->setParameter('value', $value)
-            ->setParameter('id', $id)
-
+        $queryBuilder = $this->getEntityManager()->createQueryBuilder();
+        return $queryBuilder->update("product", "p")
+            ->set("p.$key", ":value")
+            ->where("p.id = :id")
+            ->setParameter("value", $value)
+            ->setParameter("id", $id)
             ->getQuery()
             ->getResult();
+
+//            $this->createQueryBuilder("product")
+//
+//            ->update('product.description')
+//            ->set('product.description', ':value')
+//            ->where('product.id = :id')
+//            ->setParameter('key', $key)
+//            ->setParameter('value', $value)
+//            ->setParameter('id', $id)
+//
+//            ->getQuery()
+//            ->getResult();
     }
 }

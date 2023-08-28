@@ -12,6 +12,9 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Serializer\Exception\ExceptionInterface;
+use Symfony\Component\Serializer\Normalizer\DenormalizerInterface;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class ProductController extends AbstractController
 {
@@ -21,11 +24,25 @@ class ProductController extends AbstractController
     private EntityManagerInterface $entityManager;
 
     /**
-     * @param EntityManagerInterface $entityManager
+     * @var ValidatorInterface
      */
-    public function __construct(EntityManagerInterface $entityManager)
+    private ValidatorInterface $validator;
+
+    /**
+     * @var DenormalizerInterface
+     */
+    private DenormalizerInterface $denormalizer;
+
+    /**
+     * @param EntityManagerInterface $entityManager
+     * @param ValidatorInterface $validator
+     * @param DenormalizerInterface $denormalizer
+     */
+    public function __construct(EntityManagerInterface $entityManager, ValidatorInterface $validator, DenormalizerInterface $denormalizer)
     {
         $this->entityManager = $entityManager;
+        $this->validator = $validator;
+        $this->denormalizer = $denormalizer;
     }
 
     /**
@@ -43,6 +60,7 @@ class ProductController extends AbstractController
      * @param Request $request
      * @return JsonResponse
      * @throws Exception
+     * @throws ExceptionInterface
      */
     #[Route('/products', name: 'create_product', methods: "POST")]
     #[IsGranted("ROLE_ADMIN")]
@@ -57,11 +75,14 @@ class ProductController extends AbstractController
             throw new Exception("Put values");
         }
 
-        $product = new Product();
+        $product = $this->denormalizer->denormalize($requestData, Product::class, "array");
+
         $product
             ->setName($requestData['name'])
             ->setDescription($requestData['description'] ?? "")
             ->setPrice($requestData["price"]);
+
+        $this->printErrors($product);
 
         $this->entityManager->persist($product);
         $this->entityManager->flush();
@@ -105,7 +126,6 @@ class ProductController extends AbstractController
         return new JsonResponse();
     }
 
-
     /**
      * @param string $id
      * @param Request $request
@@ -122,7 +142,13 @@ class ProductController extends AbstractController
             throw new NotFoundHttpException();
         }
 
-        $updatedProduct = $product;
+//        $errors = $this->validator->validate($product);
+//
+//        if (count($errors) > 0) {
+//            return new JsonResponse((string)$errors);
+//        }
+
+//        $updatedProduct = $product;
 
         foreach ($requestData as $key => $field) {
             $this->entityManager->getRepository(Product::class)->updateProductByField($id, $key, $field);
@@ -131,5 +157,18 @@ class ProductController extends AbstractController
         $this->entityManager->flush();
 
         return new JsonResponse($product);
+    }
+
+    /**
+     * @param $product
+     * @return JsonResponse|void
+     */
+    public function printErrors($product)
+    {
+        $errors = $this->validator->validate($product);
+
+        if (count($errors) > 0) {
+            return new JsonResponse((string)$errors);
+        }
     }
 }

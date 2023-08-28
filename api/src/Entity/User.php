@@ -9,6 +9,11 @@ use Doctrine\ORM\Mapping as ORM;
 use JsonSerializable;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Validator\Constraints\Email;
+use Symfony\Component\Validator\Constraints\Length;
+use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Constraints\NotNull;
+use Symfony\Component\Validator\Constraints\Type;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 class User implements UserInterface, PasswordAuthenticatedUserInterface, JsonSerializable
@@ -28,6 +33,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, JsonSer
      * @var string|null
      */
     #[ORM\Column(length: 180, unique: true)]
+    #[NotBlank]
+    #[Email]
+    #[NotNull]
     private ?string $email = null;
 
     /**
@@ -37,15 +45,19 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, JsonSer
     private array $roles = [];
 
     /**
-     * @var string The hashed password
+     * @var string|null The hashed password
      */
     #[ORM\Column]
+    #[NotBlank]
     private ?string $password = null;
 
     /**
      * @var string|null
      */
     #[ORM\Column(length: 255)]
+    #[Type('string')]
+    #[Length(min: 3)]
+    #[NotNull]
     private ?string $name = null;
 
     /**
@@ -97,7 +109,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, JsonSer
      */
     public function getUserIdentifier(): string
     {
-        return (string) $this->email;
+        return (string)$this->email;
     }
 
     /**
@@ -105,7 +117,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, JsonSer
      */
     public function getUsername(): string
     {
-        return (string) $this->email;
+        return (string)$this->email;
     }
 
     /**
@@ -209,8 +221,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, JsonSer
     public function jsonSerialize(): array
     {
         return [
-            "name"=>$this->getName(),
-            "email"=>$this->getEmail()
+            "name"  => $this->getName(),
+            "email" => $this->getEmail()
         ];
     }
 }
