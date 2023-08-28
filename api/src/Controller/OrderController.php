@@ -27,24 +27,17 @@ class OrderController extends AbstractController
     private EntityManagerInterface $entityManager;
 
     /**
-     * @var DenormalizerInterface
-     */
-    private DenormalizerInterface $denormalizer;
-
-    /**
      * @var ValidatorInterface
      */
     private ValidatorInterface $validator;
 
     /**
      * @param EntityManagerInterface $entityManager
-     * @param DenormalizerInterface $denormalizer
      * @param ValidatorInterface $validator
      */
-    public function __construct(EntityManagerInterface $entityManager, DenormalizerInterface $denormalizer, ValidatorInterface $validator)
+    public function __construct(EntityManagerInterface $entityManager, ValidatorInterface $validator)
     {
         $this->entityManager = $entityManager;
-        $this->denormalizer = $denormalizer;
         $this->validator = $validator;
     }
 
@@ -100,7 +93,7 @@ class OrderController extends AbstractController
         $user = $this->getUser();
 
         if (!$order) {
-            throw new Exception("There is no order with id " . $id);
+            throw new NotFoundHttpException("There is no order with id " . $id);
         }
 
         $this->checkUser($order, $user);
@@ -112,7 +105,6 @@ class OrderController extends AbstractController
      * @param Request $request
      * @return JsonResponse
      * @throws Exception
-     * @throws ExceptionInterface
      */
     #[Route('/orders', name: 'create_order', methods: 'POST')]
     #[IsGranted('ROLE_USER')]
@@ -121,21 +113,24 @@ class OrderController extends AbstractController
         $requestData = json_decode($request->getContent(), true);
         $user = $this->getUser();
 
-//        $userOrders = $this->entityManager->getRepository(Order::class)->findBy(['user'=>$user]);
-//        if(count($userOrders)===3){
-//            throw new Exception('Already have 3 orders');
-//        }
+        $userOrders = $this->entityManager->getRepository(Order::class)->findBy(['user' => $user]);
 
-        $order = $this->denormalizer->denormalize($requestData, Order::class, "array");
+        if (count($userOrders) >= 2) {
+            throw new Exception('Already have 2 orders');
+        }
 
-        $products = $this->entityManager->getRepository(Product::class)->findBy(['id' => $requestData['products']]);
+        $productIds = $requestData['products'];
 
-        foreach ($products as $item) {
-            if (!$item) {
-                throw new NotFoundHttpException();
+        $order = new Order();
+
+        foreach ($productIds as $productId) {
+            $product = $this->entityManager->getRepository(Product::class)->find($productId);
+
+            if (!$product) {
+                throw new NotFoundHttpException('No product with id ' . $productId);
             }
 
-            $order->addProduct($item);
+            $order->addProduct($product);
         }
 
         $orderSum = $this->countOrderSum($order->getProducts());
@@ -174,7 +169,7 @@ class OrderController extends AbstractController
         $user = $this->getUser();
 
         if (!$order) {
-            throw new Exception("There is no order with id " . $id);
+            throw new NotFoundHttpException("There is no order with id " . $id);
         }
 
         $this->checkUser($order, $user);
@@ -190,6 +185,12 @@ class OrderController extends AbstractController
         }
 
         $this->updateOrderSum($order);
+
+        $errors = $this->validator->validate($order);
+
+        if (count($errors) > 0) {
+            return new JsonResponse((string)$errors);
+        }
 
         $this->entityManager->flush();
 

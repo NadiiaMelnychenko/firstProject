@@ -139,19 +139,29 @@ class ProductController extends AbstractController
         $product = $this->entityManager->getRepository(Product::class)->find($id);
 
         if (!$product) {
-            throw new NotFoundHttpException();
+            throw new NotFoundHttpException('Product not found for id ' . $id);
         }
 
-//        $errors = $this->validator->validate($product);
-//
-//        if (count($errors) > 0) {
-//            return new JsonResponse((string)$errors);
-//        }
+        $metadata = $this->entityManager->getClassMetadata(Product::class);
+        $validFields = array_keys($metadata->fieldMappings);
 
-//        $updatedProduct = $product;
+        foreach ($requestData as $field => $value) {
 
-        foreach ($requestData as $key => $field) {
-            $this->entityManager->getRepository(Product::class)->updateProductByField($id, $key, $field);
+            if (!in_array($field, $validFields)) {
+                throw new NotFoundHttpException('Don`t have such field');
+            }
+
+            $setter = 'set' . ucfirst($field);
+
+            if (method_exists($product, $setter)) {
+                $errors = $this->validator->validatePropertyValue(Product::class, $field, $value);
+
+                if (count($errors) > 0) {
+                    return new JsonResponse((string)$errors, 400);
+                }
+
+                $product->$setter($value);
+            }
         }
 
         $this->entityManager->flush();

@@ -3,6 +3,7 @@
 namespace App\Validator\Constraints;
 
 use App\Entity\Order;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
 use Symfony\Component\Validator\Exception\UnexpectedTypeException;
