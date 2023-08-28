@@ -2,17 +2,18 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\ProductRepository;
+use App\Validator\Constraints\Product as ProductConstraint;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use JsonSerializable;
 use Symfony\Component\Validator\Constraints\NotBlank;
-use Symfony\Component\Validator\Constraints\NotNull;
-use App\Validator\Constraints\ProductConstraint;
 
 #[ORM\Entity(repositoryClass: ProductRepository::class)]
-
+//#[ProductConstraint]
+#[ApiResource]
 class Product implements JsonSerializable
 {
     #[ORM\Id]
@@ -21,9 +22,7 @@ class Product implements JsonSerializable
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    #[ProductConstraint]
     #[NotBlank]
-    #[NotNull]
     private ?string $name = null;
 
     #[ORM\Column(type: Types::DECIMAL, precision: 2, scale: '0')]
@@ -32,66 +31,14 @@ class Product implements JsonSerializable
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $description = null;
 
-    #[ORM\ManyToOne(targetEntity: Category::class, inversedBy: "products")]
-    private ?Category $category = null;
-//
+//    #[ORM\ManyToOne(targetEntity: Category::class, inversedBy: "products")]
+//    private ?Category $category = null;
+
 //    #[ORM\OneToOne(targetEntity: ProductInfo::class)]
 //    private ?ProductInfo $productInfo = null;
 
-    #[ORM\ManyToMany(targetEntity: Test::class)]
-    private Collection $test;
-
-    /**
-     * @return Collection
-     */
-    public function getTest(): Collection
-    {
-        return $this->test;
-    }
-
-    /**
-     * @param Collection $test
-     * @return void
-     */
-    public function setTest(Collection $test): void
-    {
-        $this->test = $test;
-    }
-
-    /**
-     * @return Category|null
-     */
-    public function getCategory(): ?Category
-    {
-        return $this->category;
-    }
-
-    /**
-     * @param Category|null $category
-     * @return void
-     */
-    public function setCategory(?Category $category): void
-    {
-        $this->category = $category;
-    }
-
-    /**
-     * @return ProductInfo|null
-     */
-    public function getProductInfo(): ?ProductInfo
-    {
-        return $this->productInfo;
-    }
-
-    /**
-     * @param ProductInfo|null $productInfo
-     * @return void
-     */
-    public function setProductInfo(?ProductInfo $productInfo): void
-    {
-        $this->productInfo = $productInfo;
-    }
-
+//    #[ORM\ManyToMany(targetEntity: Test::class)]
+//    private Collection $test;
 
     /**
      * @return int|null
@@ -113,7 +60,7 @@ class Product implements JsonSerializable
      * @param string $name
      * @return $this
      */
-    public function setName(string $name): self
+    public function setName(string $name): static
     {
         $this->name = $name;
 
@@ -132,7 +79,7 @@ class Product implements JsonSerializable
      * @param string $price
      * @return $this
      */
-    public function setPrice(string $price): self
+    public function setPrice(string $price): static
     {
         $this->price = $price;
 
@@ -151,7 +98,7 @@ class Product implements JsonSerializable
      * @param string|null $description
      * @return $this
      */
-    public function setDescription(?string $description): self
+    public function setDescription(?string $description): static
     {
         $this->description = $description;
 
@@ -164,11 +111,59 @@ class Product implements JsonSerializable
     public function jsonSerialize(): array
     {
         return [
-            "id" => $this->getId(),
-            "name" => $this->getName(),
-            "price" => $this->getPrice(),
-            "description" => $this->getDescription(),
-            "category" => $this->getCategory()
+            "id"          => $this->getId(),
+            "name"        => $this->getName(),
+            "price"       => $this->getPrice(),
+            "description" => $this->getDescription()
         ];
     }
+//
+//    /**
+//     * @return Category|null
+//     */
+//    public function getCategory(): ?Category
+//    {
+//        return $this->category;
+//    }
+//
+//    /**
+//     * @param Category|null $category
+//     */
+//    public function setCategory(?Category $category): void
+//    {
+//        $this->category = $category;
+//    }
+
+//    /**
+//     * @return ProductInfo|null
+//     */
+//    public function getProductInfo(): ?ProductInfo
+//    {
+//        return $this->productInfo;
+//    }
+//
+//    /**
+//     * @param ProductInfo|null $productInfo
+//     */
+//    public function setProductInfo(?ProductInfo $productInfo): void
+//    {
+//        $this->productInfo = $productInfo;
+//    }
+//
+//    /**
+//     * @return Collection
+//     */
+//    public function getTest(): Collection
+//    {
+//        return $this->test;
+//    }
+//
+//    /**
+//     * @param Collection $test
+//     */
+//    public function setTest(Collection $test): void
+//    {
+//        $this->test = $test;
+//    }
+
 }
