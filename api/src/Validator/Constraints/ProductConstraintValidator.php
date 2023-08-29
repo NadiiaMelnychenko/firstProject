@@ -9,6 +9,8 @@ use Symfony\Component\Validator\Exception\UnexpectedTypeException;
 
 class ProductConstraintValidator extends ConstraintValidator
 {
+    const MAX_PRICE = 90;
+
     /**
      * @param $value
      * @param Constraint $constraint
@@ -28,8 +30,8 @@ class ProductConstraintValidator extends ConstraintValidator
             $this->context->addViolation("Name is empty");
         }
 
-        if ($value->getPrice() > 90) {
-            $this->context->addViolation("Price should be < 90");
+        if ($value->getPrice() > self::MAX_PRICE) {
+            $this->context->addViolation("Price should be < " . self::MAX_PRICE);
         }
     }
 }
