@@ -2,53 +2,67 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\CategoryRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
+use App\Validator\Constraints\CategoryConstraint;
 use Doctrine\ORM\Mapping as ORM;
 use JsonSerializable;
 
 #[ORM\Entity(repositoryClass: CategoryRepository::class)]
+#[CategoryConstraint]
+#[ApiResource(
+    collectionOperations: [
+        "get"  => [
+            "method" => "GET",
+        ],
+        "post" => [
+            "method"   => "POST",
+            "security" => "is_granted('" . User::ROLE_ADMIN . "')"
+        ]
+    ],
+    itemOperations: [
+        "get"    => [
+            "method" => "GET"
+        ],
+        "put"    => [
+            "method"   => "PUT",
+            "security" => "is_granted('" . User::ROLE_ADMIN . "')"
+        ],
+        "delete" => [
+            "method"   => "DELETE",
+            "security" => "is_granted('" . User::ROLE_ADMIN . "')"
+        ],
+        "patch"  => [
+            "method"   => "PATCH",
+            "security" => "is_granted('" . User::ROLE_ADMIN . "')"
+        ]
+    ],
+//    attributes: [
+//        "security" => "is_granted('" . User::ROLE_USER . "')"
+//    ]
+)
+]
 class Category implements JsonSerializable
 {
+    /**
+     * @var int|null
+     */
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
 
+    /**
+     * @var string|null
+     */
     #[ORM\Column(length: 255)]
     private ?string $name = null;
 
+    /**
+     * @var string|null
+     */
     #[ORM\Column(length: 255)]
     private ?string $type = null;
-
-    #[ORM\OneToMany(mappedBy: "category", targetEntity: Product::class)]
-    private Collection $products;
-
-    /**
-     * Category constructor
-     */
-    public function __construct()
-    {
-        $this->products = new ArrayCollection();
-    }
-
-    /**
-     * @return Collection
-     */
-    public function getProducts(): Collection
-    {
-        return $this->products;
-    }
-
-    /**
-     * @param Collection $products
-     * @return void
-     */
-    public function setProducts(Collection $products): void
-    {
-        $this->products = $products;
-    }
 
     /**
      * @return int|null
@@ -102,7 +116,7 @@ class Category implements JsonSerializable
     public function jsonSerialize(): array
     {
         return [
-            "id" => $this->getId(),
+            "id"   => $this->getId(),
             "name" => $this->getName(),
             "type" => $this->getType()
         ];

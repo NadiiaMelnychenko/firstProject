@@ -8,7 +8,7 @@ use Symfony\Component\Validator\Constraint;
  * @Annotation
  */
 #[\Attribute]
-class ProductConstraint extends Constraint
+class CategoryConstraint extends Constraint
 {
     /**
      * @return string

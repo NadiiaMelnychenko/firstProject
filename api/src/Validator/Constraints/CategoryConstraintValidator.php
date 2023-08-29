@@ -2,12 +2,12 @@
 
 namespace App\Validator\Constraints;
 
-use App\Entity\Product;
+use App\Entity\Category;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
 use Symfony\Component\Validator\Exception\UnexpectedTypeException;
 
-class ProductConstraintValidator extends ConstraintValidator
+class CategoryConstraintValidator extends ConstraintValidator
 {
     /**
      * @param $value
@@ -16,20 +16,20 @@ class ProductConstraintValidator extends ConstraintValidator
      */
     public function validate($value, Constraint $constraint): void
     {
-        if (!$constraint instanceof ProductConstraint) {
-            throw new UnexpectedTypeException($constraint, ProductConstraint::class);
+        if (!$constraint instanceof CategoryConstraint) {
+            throw new UnexpectedTypeException($constraint, CategoryConstraint::class);
         }
 
-        if (!$value instanceof Product) {
-            throw new UnexpectedTypeException($value, Product::class);
+        if (!$value instanceof Category) {
+            throw new UnexpectedTypeException($value, Category::class);
         }
 
         if (empty($value->getName())) {
             $this->context->addViolation("Name is empty");
         }
 
-        if ($value->getPrice() > 90) {
-            $this->context->addViolation("Price should be < 90");
+        if (!preg_match('/^[a-zA-Z ]+$/', $value->getType())) {
+            $this->context->addViolation("Wrong type of category");
         }
     }
 }
