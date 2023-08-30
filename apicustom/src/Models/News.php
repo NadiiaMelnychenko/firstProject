@@ -6,7 +6,7 @@ use App\Core\Database\ActiveRecord;
 
 /**
  * @property int $id ID of news
- * @property string $title Title of news
+ * @property string $title BannerMain of news
  * @property string $text Text of news
  * @property string $date Date of news
  */

@@ -3,14 +3,16 @@ import Header from "../Header/Header";
 import Footer from "../Footer";
 import Banner from "../Banner";
 import Catalog from "../Catalog";
+import BannerMain from "../BannerMain";
+import Main from "../Main";
 
 function Page(props) {
     return <div>
         <Header/>
-        <Banner/>
-        <Banner/>
+        <BannerMain/>
         <Banner/>
         <Catalog/>
+        <Main/>
         <Footer/>
     </div>
 }
