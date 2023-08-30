@@ -25,8 +25,8 @@ class ProductConstraintValidator extends ConstraintValidator
             throw new UnexpectedTypeException($value, Product::class);
         }
 
-        if (empty($value->getName())) {
-            $this->context->addViolation("Name is empty");
-        }
+//        if (empty($value->getName())) {
+//            $this->context->addViolation("Name is empty");
+//        }
     }
 }

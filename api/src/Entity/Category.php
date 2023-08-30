@@ -6,22 +6,43 @@ use App\Repository\CategoryRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use JsonSerializable;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: CategoryRepository::class)]
-class Category implements JsonSerializable
+class Category
 {
+    /**
+     * @var int|null
+     */
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups([
+        "get:item:product"
+    ])]
     private ?int $id = null;
 
+    /**
+     * @var string|null
+     */
     #[ORM\Column(length: 255)]
+    #[Groups([
+        "get:item:product"
+    ])]
     private ?string $name = null;
 
+    /**
+     * @var string|null
+     */
     #[ORM\Column(length: 255)]
+    #[Groups([
+        "get:item:product"
+    ])]
     private ?string $type = null;
 
+    /**
+     * @var Collection
+     */
     #[ORM\OneToMany(mappedBy: "category", targetEntity: Product::class)]
     private Collection $products;
 
@@ -43,11 +64,13 @@ class Category implements JsonSerializable
 
     /**
      * @param Collection $products
-     * @return void
+     * @return Category
      */
-    public function setProducts(Collection $products): void
+    public function setProducts(Collection $products): self
     {
         $this->products = $products;
+
+        return $this;
     }
 
     /**
@@ -94,17 +117,5 @@ class Category implements JsonSerializable
         $this->type = $type;
 
         return $this;
-    }
-
-    /**
-     * @return array
-     */
-    public function jsonSerialize(): array
-    {
-        return [
-            "id" => $this->getId(),
-            "name" => $this->getName(),
-            "type" => $this->getType()
-        ];
     }
 }
