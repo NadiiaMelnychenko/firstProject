@@ -1,18 +1,13 @@
 function Archives() {
-    return <>
-        <li><a href="#">March 2021</a></li>
-        <li><a href="#">February 2021</a></li>
-        <li><a href="#">January 2021</a></li>
-        <li><a href="#">December 2020</a></li>
-        <li><a href="#">November 2020</a></li>
-        <li><a href="#">October 2020</a></li>
-        <li><a href="#">September 2020</a></li>
-        <li><a href="#">August 2020</a></li>
-        <li><a href="#">July 2020</a></li>
-        <li><a href="#">June 2020</a></li>
-        <li><a href="#">May 2020</a></li>
-        <li><a href="#">April 2020</a></li>
-    </>
+    const arr = ["March 2021",
+        "February 2021", "January 2021",
+        "December 2020", "November 2020",
+        "October 2020", "September 2020",
+        "August 2020", "July 2020",
+        "June 2020", "May 2020", "April 2020"
+    ]
+
+    return arr.map((value) => <li><a href="#">{value}</a></li>)
 }
 
 export default Archives;
