@@ -6,6 +6,8 @@ use ApiPlatform\Core\Annotation\ApiFilter;
 use ApiPlatform\Core\Annotation\ApiResource;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\RangeFilter;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
+use App\Action\CreateProductAction;
+use App\EntityListener\ProductEntityListener;
 use App\Repository\ProductRepository;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
@@ -27,7 +29,8 @@ use App\Validator\Constraints\ProductConstraint;
             "method"                  => "POST",
             //            "security"              => "is_granted('" . User::ROLE_USER . "')",
             "denormalization_context" => ["groups" => ["post:collection:product"]],
-            "normalization_context"   => ["groups" => ["get:item:product"]]
+            "normalization_context"   => ["groups" => ["get:item:product"]],
+            "controller"              => CreateProductAction::class
         ]
     ],
     itemOperations: [
@@ -47,6 +50,7 @@ use App\Validator\Constraints\ProductConstraint;
 #[ApiFilter(RangeFilter::class, properties: [
     "price"
 ])]
+#[ORM\EntityListeners([ProductEntityListener::class])]
 class Product
 {
     /**
