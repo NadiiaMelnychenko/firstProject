@@ -12,14 +12,10 @@ const arr = [2, 3, 10, 34];
 
 root.render(
     <React.StrictMode>
-        {arr.map(
-            (value, index) =>
-                <Counter key={index} value={value} color="red"/>
-        )}
+        <Counter value={4} min={3} max={7}/>
         <Counter value={4}/>
-        <Counter/>
         {/*<App />*/}
-        {/*<Page/>*/}
+        <Page/>
     </React.StrictMode>
 );
 
