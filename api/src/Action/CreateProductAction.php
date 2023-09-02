@@ -12,8 +12,6 @@ class CreateProductAction
      */
     public function __invoke(Product $data): Product
     {
-
-
         return $data;
     }
 }
