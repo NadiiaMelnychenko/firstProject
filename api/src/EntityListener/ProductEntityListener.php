@@ -8,22 +8,42 @@ use Doctrine\Persistence\Event\LifecycleEventArgs;
 
 class ProductEntityListener
 {
+    /**
+     * @param Product $product
+     * @param PostPersistEventArgs $eventArgs
+     * @return void
+     */
     public function postPersist(Product $product, PostPersistEventArgs $eventArgs)
     {
 //        $test = $this->getObjectManager()->getUnitOfWork()->getEntityChangeSet($eventArgs->getObject());
     }
 
-    public function postUpdate(Product $product, LifecycleEventArgs $eventArgs)
+    /**
+     * @param Product $product
+     * @param LifecycleEventArgs $eventArgs
+     * @return void
+     */
+    public function postUpdate(Product $product, LifecycleEventArgs $eventArgs): void
     {
         $test = 1;
     }
 
-    public function preUpdate(Product $product, LifecycleEventArgs $eventArgs)
+    /**
+     * @param Product $product
+     * @param LifecycleEventArgs $eventArgs
+     * @return void
+     */
+    public function preUpdate(Product $product, LifecycleEventArgs $eventArgs): void
     {
         $test = 1;
     }
 
-    public function prePersist(Product $product, LifecycleEventArgs $eventArgs)
+    /**
+     * @param Product $product
+     * @param LifecycleEventArgs $eventArgs
+     * @return void
+     */
+    public function prePersist(Product $product, LifecycleEventArgs $eventArgs): void
     {
         $newName = ($product->getName()) . " 1";
         $product->setName($newName);
