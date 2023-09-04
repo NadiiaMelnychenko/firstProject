@@ -27,7 +27,7 @@ use App\Validator\Constraints\ProductConstraint;
         ],
         "post" => [
             "method"                  => "POST",
-            //            "security"              => "is_granted('" . User::ROLE_USER . "')",
+            "security"                => "is_granted('" . User::ROLE_USER . "')",
             "denormalization_context" => ["groups" => ["post:collection:product"]],
             "normalization_context"   => ["groups" => ["get:item:product"]],
             "controller"              => CreateProductAction::class
@@ -106,6 +106,16 @@ class Product
         "post:collection:product"
     ])]
     private ?Category $category = null;
+
+    /**
+     * @var User|null
+     */
+    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: "products")]
+    #[Groups([
+        "get:item:product",
+        "post:collection:product"
+    ])]
+    private ?User $user = null;
 
     /**
      * @return int|null
@@ -187,6 +197,24 @@ class Product
     public function setCategory(?Category $category): self
     {
         $this->category = $category;
+        return $this;
+    }
+
+    /**
+     * @return User|null
+     */
+    public function getUser(): ?User
+    {
+        return $this->user;
+    }
+
+    /**
+     * @param User|null $user
+     * @return $this
+     */
+    public function setUser(?User $user): self
+    {
+        $this->user = $user;
         return $this;
     }
 }
