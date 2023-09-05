@@ -1,11 +1,17 @@
-import {useState} from "react";
+import {useEffect, useState} from "react";
 
 // import PropTypes from "prop-types";
 
 function Counter({value = 100, padding = 20, min = 1, max = 9}) {
     const [currentValue, setValue] = useState(value)
+    useEffect(() => {
+        console.log("counter");
+        return () => {
+            console.log("counter --");
+        }
+    }, []);
     return <div
-        style={{padding, backgroundColor: (currentValue < min) ? "red" : ((currentValue > max)  ? "green" : "white")}}>
+        style={{padding, backgroundColor: (currentValue < min) ? "red" : ((currentValue > max) ? "green" : "white")}}>
         <div>Value: {currentValue}</div>
         <div>
             <button onClick={() => {

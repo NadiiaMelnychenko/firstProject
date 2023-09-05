@@ -1,10 +1,15 @@
+import {Link, Route, Routes} from "react-router-dom";
+import React from "react";
+import Counter from "../Counter";
+
 function Header({title, dropdown}) {
     const categoryItems = ["one", "two", "three"]
 
 
     return <nav className="navbar navbar-expand-lg bg-body-tertiary">
         <div className="container-fluid">
-            <a className="navbar-brand" href="#">{title}</a>
+            <Link to="/" className="navbar-brand">{title}</Link>
+            {/*<a className="navbar-brand" href="#">{title}</a>*/}
             <button className="navbar-toggler" type="button" data-bs-toggle="collapse"
                     data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
                     aria-expanded="false" aria-label="Toggle navigation">
@@ -13,10 +18,12 @@ function Header({title, dropdown}) {
             <div className="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul className="navbar-nav me-auto mb-2 mb-lg-0">
                     <li className="nav-item">
-                        <a className="nav-link active" aria-current="page" href="#">Home</a>
+                        <Link to="/" className="nav-link active" aria-current="page">Home</Link>
+                        {/*<a className="nav-link active" aria-current="page" href="#">Home</a>*/}
                     </li>
                     <li className="nav-item">
-                        <a className="nav-link" href="#">Link</a>
+                        <Link to="/counter" className="nav-link">Counters</Link>
+                        {/*<a className="nav-link" href="#">Link</a>*/}
                     </li>
                     <li className="nav-item dropdown">
                         <a className="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
@@ -24,8 +31,8 @@ function Header({title, dropdown}) {
                             {dropdown}
                         </a>
                         <ul className="dropdown-menu">
-                            {categoryItems.map( (categotyName) =>
-                                <li><a className="dropdown-item" href="#">{categotyName}</a></li>
+                            {categoryItems.map((categotyName, index) =>
+                                <li><a className="dropdown-item" href="#" key={index}>{categotyName}</a></li>
                             )}
                         </ul>
                     </li>
