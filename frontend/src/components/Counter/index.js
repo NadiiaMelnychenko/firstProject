@@ -1,7 +1,5 @@
 import {useEffect, useState} from "react";
 
-// import PropTypes from "prop-types";
-
 function Counter({value = 100, padding = 20, min = 1, max = 9}) {
     const [currentValue, setValue] = useState(value)
     useEffect(() => {

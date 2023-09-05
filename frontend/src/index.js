@@ -5,7 +5,7 @@ import './index.css';
 import reportWebVitals from './reportWebVitals';
 import Page from "./components/Page/Page";
 import Counter from "./components/Counter";
-import {BrowserRouter as Router} from "react-router-dom";
+// import {BrowserRouter as Router} from "react-router-dom";
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 
@@ -13,9 +13,9 @@ const arr = [2, 3, 10, 34];
 
 root.render(
     <React.StrictMode>
-        <Router>
+        {/*<Router>*/}
             <Page/>
-        </Router>
+        {/*</Router>*/}
         {/*<App />*/}
     </React.StrictMode>
 );

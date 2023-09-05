@@ -7,7 +7,7 @@ function Archives() {
         "June 2020", "May 2020", "April 2020"
     ]
 
-    return arr.map((value) => <li><a href="#">{value}</a></li>)
+    return arr.map((value, index) => <li key={index}><a href="#">{value}</a></li>)
 }
 
 export default Archives;
