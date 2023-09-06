@@ -1,15 +1,7 @@
 import './Page.css'
 import Header from "../Header/Header";
-import Footer from "../Footer";
-import Banner from "../Banner";
-import Catalog from "../Catalog";
-import BannerMain from "../BannerMain";
-import Main from "../Main";
 // import {Link, Route, Routes} from "react-router-dom";
-import Counter from "../Counter";
 import React from "react";
-import Product from "../Product";
-
 
 export default function Page() {
     return <div>

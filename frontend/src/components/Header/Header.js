@@ -1,6 +1,5 @@
 import React from "react";
-import {createBrowserRouter, Link, Outlet, RouterProvider} from
-        "react-router-dom";
+import {createBrowserRouter, Link, Outlet, RouterProvider} from "react-router-dom";
 import Banner from "../Banner";
 import Counter from "../Counter";
 import BannerMain from "../BannerMain";
