@@ -24,11 +24,22 @@ const GoodsContainer = () => {
 
   const [filterData, setFilterData] = useState({
     "page": checkFilterItem(searchParams, "page", 1, true),
-    "name": checkFilterItem(searchParams, "name", null)
+    "name": checkFilterItem(searchParams, "name", null),
+    "price": checkFilterItem(searchParams, "price", null)
   });
 
   const fetchProducts = () => {
     let filterUrl = fetchFilterData(filterData);
+
+    const { minPrice, maxPrice } = filterData;
+
+    if (minPrice !== undefined) {
+      filterUrl += `&price[gte]=${minPrice}`;
+    }
+    if (maxPrice !== undefined) {
+      filterUrl += `&price[lte]=${maxPrice}`;
+    }
+
     navigate(filterUrl);
 
     axios.get("/api/products" + filterUrl +  "&itemsPerPage=" + paginationInfo.itemsPerPage, userAuthenticationConfig()).then(response => {
