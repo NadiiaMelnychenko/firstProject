@@ -5,7 +5,7 @@ import userAuthenticationConfig from "../../../utils/userAuthenticationConfig";
 import {responseStatus} from "../../../utils/consts";
 import Notification from "../../elemets/notification/Notification";
 
-const GoodsCreate = () => {
+const GoodsCreate = ({ updateProductList }) => {
 
     const [name, setName] = useState("");
     const [description, setDescription] = useState("about text");
@@ -42,6 +42,7 @@ const GoodsCreate = () => {
         axios.post("/api/products", constructData(), userAuthenticationConfig(false))
             .then(response => {
                 setNotification({...notification, visible: true, type: "success", message: "Product created"});
+                updateProductList();
             })
             .catch(error => {
                 setNotification({...notification, visible: true, type: "error", message: error.response.data.title});

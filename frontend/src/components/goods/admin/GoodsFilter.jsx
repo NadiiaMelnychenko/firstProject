@@ -5,7 +5,7 @@ const GoodsFilter = ({filterData, setFilterData}) => {
     const onChangeFilterData = (event) => {
         event.preventDefault();
 
-        let {name, value} = event.target;
+        const {name, value} = event.target;
 
         setFilterData({...filterData, [name]: value});
     };
@@ -14,6 +14,7 @@ const GoodsFilter = ({filterData, setFilterData}) => {
         <div>
             <label htmlFor="name">Name: </label>
             <input id="name" type="text" name="name" defaultValue={filterData.name ?? ""} onChange={onChangeFilterData}/>
+            <br/>
             <label htmlFor="minPrice">Мінімальна ціна: </label>
             <input
                 id="minPrice"
@@ -30,6 +31,7 @@ const GoodsFilter = ({filterData, setFilterData}) => {
                 value={filterData.maxPrice ?? ""}
                 onChange={onChangeFilterData}
             />
+            <br/>
         </div>
     </>;
 };

@@ -8,9 +8,10 @@ import GoodsList from "./GoodsList";
 import {checkFilterItem, fetchFilterData} from "../../../utils/fetchFilterData";
 import userAuthenticationConfig from "../../../utils/userAuthenticationConfig";
 import GoodsFilter from "./GoodsFilter";
+import GoodsCreate from "./GoodsCreate";
+import DateFilter from './DateFilter';
 
 const GoodsContainer = () => {
-
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
 
@@ -25,19 +26,29 @@ const GoodsContainer = () => {
   const [filterData, setFilterData] = useState({
     "page": checkFilterItem(searchParams, "page", 1, true),
     "name": checkFilterItem(searchParams, "name", null),
-    "price": checkFilterItem(searchParams, "price", null)
+    "price": checkFilterItem(searchParams, "price", null),
+    "addTime": checkFilterItem(searchParams, "addTime", null),
   });
 
+  function convertDateToBigInt(date) {
+    return Math.floor(new Date(date).getTime() / 1000); // Переводимо дату в секунди та округлюємо
+  }
   const fetchProducts = () => {
     let filterUrl = fetchFilterData(filterData);
 
-    const { minPrice, maxPrice } = filterData;
+    const { minPrice, maxPrice, startDate, endDate } = filterData;
 
     if (minPrice !== undefined) {
       filterUrl += `&price[gte]=${minPrice}`;
+
     }
     if (maxPrice !== undefined) {
       filterUrl += `&price[lte]=${maxPrice}`;
+    }
+    if (startDate && endDate) {
+      const startDateBigInt = convertDateToBigInt(startDate);
+      const endDateBigInt = convertDateToBigInt(endDate);
+      filterUrl += `&addTime[gte]=${startDate}&addTime[lte]=${endDate}`;
     }
 
     navigate(filterUrl);
@@ -64,6 +75,10 @@ const GoodsContainer = () => {
     fetchProducts();
   }, [filterData]);
 
+  const updateProductList = () => {
+    fetchProducts();
+  };
+
   return (
     <>
       <Helmet>
@@ -80,7 +95,9 @@ const GoodsContainer = () => {
       <Typography variant="h4" component="h1" mt={1}>
         Goods
       </Typography>
+      <GoodsCreate updateProductList={updateProductList} />
       <GoodsFilter filterData={filterData} setFilterData={setFilterData}/>
+      <DateFilter onDateChange={(dateRange) => setFilterData({ ...filterData, ...dateRange })} />
       <GoodsList goods={goods}/>
       {paginationInfo.totalPageCount &&
           <Pagination

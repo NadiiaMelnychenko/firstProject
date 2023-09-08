@@ -4,11 +4,13 @@ namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiFilter;
 use ApiPlatform\Core\Annotation\ApiResource;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\DateFilter;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\RangeFilter;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 use App\Action\CreateProductAction;
 use App\EntityListener\ProductEntityListener;
 use App\Repository\ProductRepository;
+use DateTime;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
@@ -27,7 +29,7 @@ use App\Validator\Constraints\ProductConstraint;
         ],
         "post" => [
             "method"                  => "POST",
-            "security"                => "is_granted('" . User::ROLE_USER . "')",
+            "security"                => "is_granted('" . User::ROLE_ADMIN . "')",
             "denormalization_context" => ["groups" => ["post:collection:product"]],
             "normalization_context"   => ["groups" => ["get:item:product"]],
             "controller"              => CreateProductAction::class
@@ -48,8 +50,12 @@ use App\Validator\Constraints\ProductConstraint;
     "description"
 ])]
 #[ApiFilter(RangeFilter::class, properties: [
-    "price"
+    "price",
+    "addTime"
 ])]
+//#[ApiFilter(DateFilter::class, properties: [
+//    "addTime"
+//])]
 #[ORM\EntityListeners([ProductEntityListener::class])]
 class Product
 {
@@ -82,6 +88,7 @@ class Product
      */
     #[ORM\Column(type: Types::DECIMAL, precision: 2, scale: '0')]
     #[Groups([
+        "get:collection:product",
         "get:item:product",
         "post:collection:product"
     ])]
@@ -96,6 +103,16 @@ class Product
         "post:collection:product"
     ])]
     private ?string $description = null;
+
+    /**
+     * @var string|null
+     */
+    #[ORM\Column(type: Types::BIGINT, nullable: true)]
+    #[Groups([
+        "get:collection:product",
+        "get:item:product"
+    ])]
+    private ?string $addTime = null;
 
     /**
      * @var Category|null
@@ -215,6 +232,25 @@ class Product
     public function setUser(?User $user): self
     {
         $this->user = $user;
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getAddTime(): ?string
+    {
+        return $this->addTime;
+    }
+
+    /**
+     * @param string|null $addTime
+     * @return $this
+     */
+    public function setAddTime(?string $addTime): self
+    {
+        $this->addTime = $addTime;
+
         return $this;
     }
 }
