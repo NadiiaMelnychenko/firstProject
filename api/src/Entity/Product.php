@@ -32,7 +32,7 @@ use App\Validator\Constraints\ProductConstraint;
             "security"                => "is_granted('" . User::ROLE_ADMIN . "')",
             "denormalization_context" => ["groups" => ["post:collection:product"]],
             "normalization_context"   => ["groups" => ["get:item:product"]],
-            "controller"              => CreateProductAction::class
+//            "controller"              => CreateProductAction::class
         ]
     ],
     itemOperations: [
@@ -87,6 +87,7 @@ class Product
      * @var string|null
      */
     #[ORM\Column(type: Types::DECIMAL, precision: 2, scale: '0')]
+    #[NotBlank]
     #[Groups([
         "get:collection:product",
         "get:item:product",
