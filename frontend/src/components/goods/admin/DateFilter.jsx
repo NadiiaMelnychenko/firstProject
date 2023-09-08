@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 
 function convertDateToBigInt(date) {
-    return Math.floor(new Date(date).getTime() / 1000); // Переводимо дату в секунди та округлюємо
+    return Math.floor(new Date(date).getTime() / 1000);
 }
+
 const DateFilter = ({ onDateChange }) => {
     const [startDate, setStartDate] = useState('');
     const [endDate, setEndDate] = useState('');

@@ -22,15 +22,6 @@ const GoodsCreate = ({ updateProductList }) => {
 
     const [categoryList, setCategoryList] = useState([]);
 
-    const constructData = () => {
-        return {
-            name: name,
-            description: description,
-            price: price,
-            category: `${category}`
-        }
-    }
-
     const handleSubmit = (event) => {
         event.preventDefault()
         flushProduct();
@@ -39,7 +30,12 @@ const GoodsCreate = ({ updateProductList }) => {
     const flushProduct = () => {
         setLoading(true);
 
-        axios.post("/api/products", constructData(), userAuthenticationConfig(false))
+        axios.post("/api/products", {
+            name: name,
+            description: description,
+            price: price,
+            category: `${category}`
+        }, userAuthenticationConfig(false))
             .then(response => {
                 setNotification({...notification, visible: true, type: "success", message: "Product created"});
                 updateProductList();

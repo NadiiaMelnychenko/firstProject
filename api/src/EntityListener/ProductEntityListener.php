@@ -3,6 +3,7 @@
 namespace App\EntityListener;
 
 use App\Entity\Product;
+use DateTime;
 use Doctrine\ORM\Event\PostPersistEventArgs;
 use Doctrine\Persistence\Event\LifecycleEventArgs;
 
@@ -46,6 +47,17 @@ class ProductEntityListener
     public function prePersist(Product $product, LifecycleEventArgs $eventArgs): void
     {
         $newName = $product->getName() . " 1";
+
+//        $time = $product->getAddTime();
+//        $convertTimeToBigint = strtotime($time);
+
+//        $test = date('Y-m-d H:i:s',$convertTimeToBigint);
+
+        date_default_timezone_set('Europe/Kiev');
+        $date = new DateTime();
+        $convertTimeToBigint = strtotime($date->format("YmdHis"));
+
+        $product->setAddTime($convertTimeToBigint);
         $product->setName($newName);
     }
 }

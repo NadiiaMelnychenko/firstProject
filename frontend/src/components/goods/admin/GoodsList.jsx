@@ -2,7 +2,6 @@ import React from "react";
 import GoodsItem from "./GoodsItem";
 import { Table, TableHead, TableBody, TableRow, TableCell, Paper } from "@mui/material";
 
-
 const GoodsList = ({ goods }) => {
     return <>
         <Paper>

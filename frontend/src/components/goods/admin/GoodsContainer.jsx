@@ -31,8 +31,9 @@ const GoodsContainer = () => {
   });
 
   function convertDateToBigInt(date) {
-    return Math.floor(new Date(date).getTime() / 1000); // Переводимо дату в секунди та округлюємо
+    return Math.floor(new Date(date).getTime() / 1000);
   }
+
   const fetchProducts = () => {
     let filterUrl = fetchFilterData(filterData);
 
@@ -42,12 +43,12 @@ const GoodsContainer = () => {
       filterUrl += `&price[gte]=${minPrice}`;
 
     }
+
     if (maxPrice !== undefined) {
       filterUrl += `&price[lte]=${maxPrice}`;
     }
+
     if (startDate && endDate) {
-      const startDateBigInt = convertDateToBigInt(startDate);
-      const endDateBigInt = convertDateToBigInt(endDate);
       filterUrl += `&addTime[gte]=${startDate}&addTime[lte]=${endDate}`;
     }
 
@@ -108,7 +109,6 @@ const GoodsContainer = () => {
           />}
     </>
   );
-
 };
 
 export default GoodsContainer;
