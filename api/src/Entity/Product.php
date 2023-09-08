@@ -44,6 +44,7 @@ use App\Validator\Constraints\ProductConstraint;
 //    attributes: [
 //        "security" => "is_granted('" . User::ROLE_ADMIN . "') or is_granted('" . User::ROLE_USER . "')"
 //    ]
+    order: ['id' => 'DESC']
 )]
 #[ApiFilter(SearchFilter::class, properties: [
     "name" => "partial",
@@ -53,9 +54,6 @@ use App\Validator\Constraints\ProductConstraint;
     "price",
     "addTime"
 ])]
-//#[ApiFilter(DateFilter::class, properties: [
-//    "addTime"
-//])]
 #[ORM\EntityListeners([ProductEntityListener::class])]
 class Product
 {
@@ -131,7 +129,7 @@ class Product
     #[ORM\ManyToOne(targetEntity: User::class, inversedBy: "products")]
     #[Groups([
         "get:item:product",
-        "post:collection:product"
+//        "post:collection:product"
     ])]
     private ?User $user = null;
 

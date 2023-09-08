@@ -1,16 +1,15 @@
 import React, { useState } from 'react';
+import convertBigintToDate from "../../../utils/convertBigintToDate";
 
-function convertDateToBigInt(date) {
-    return Math.floor(new Date(date).getTime() / 1000);
-}
+
 
 const DateFilter = ({ onDateChange }) => {
     const [startDate, setStartDate] = useState('');
     const [endDate, setEndDate] = useState('');
 
     const handleFilter = () => {
-        const startDateBigInt = convertDateToBigInt(startDate);
-        const endDateBigInt = convertDateToBigInt(endDate);
+        const startDateBigInt = convertBigintToDate(startDate);
+        const endDateBigInt = convertBigintToDate(endDate);
 
         onDateChange({ startDate: startDateBigInt, endDate: endDateBigInt });
     };

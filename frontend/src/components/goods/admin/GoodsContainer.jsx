@@ -99,7 +99,7 @@ const GoodsContainer = () => {
       <GoodsFilter filterData={filterData} setFilterData={setFilterData}/>
       <DateFilter onDateChange={(dateRange) => setFilterData({ ...filterData, ...dateRange })} />
       <GoodsList goods={goods}/>
-      {paginationInfo.totalPageCount &&
+      {paginationInfo.totalPageCount > 1 &&
           <Pagination
               count={paginationInfo.totalPageCount}
               shape="rounded"
