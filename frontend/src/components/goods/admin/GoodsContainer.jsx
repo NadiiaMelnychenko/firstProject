@@ -30,10 +30,6 @@ const GoodsContainer = () => {
     "addTime": checkFilterItem(searchParams, "addTime", null),
   });
 
-  function convertDateToBigInt(date) {
-    return Math.floor(new Date(date).getTime() / 1000);
-  }
-
   const fetchProducts = () => {
     let filterUrl = fetchFilterData(filterData);
 
@@ -41,15 +37,18 @@ const GoodsContainer = () => {
 
     if (minPrice !== undefined) {
       filterUrl += `&price[gte]=${minPrice}`;
-
+      filterUrl = filterUrl.replace(`&minPrice=${minPrice}`, "");
     }
 
     if (maxPrice !== undefined) {
       filterUrl += `&price[lte]=${maxPrice}`;
+      filterUrl = filterUrl.replace(`&maxPrice=${maxPrice}`, "");
     }
 
     if (startDate && endDate) {
       filterUrl += `&addTime[gte]=${startDate}&addTime[lte]=${endDate}`;
+      filterUrl = filterUrl.replace(`&startDate=${startDate}`, "");
+      filterUrl = filterUrl.replace(`&endDate=${endDate}`, "");
     }
 
     navigate(filterUrl);
